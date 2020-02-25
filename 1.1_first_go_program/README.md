@@ -1,0 +1,19 @@
+Простая программа на языке Golang, осуществляющая конкурентный
+поиск новостей в RSS-лентах по ключевому слову.
+
+Пример работы:
+```bash
+$ go run .
+Process https://news.yandex.ru/army.rss...
+Process https://news.yandex.ru/business.rss...
+Process https://news.yandex.ru/basketball.rss...
+Process https://news.yandex.ru/biathlon.rss...
+Process https://news.yandex.ru/world.rss...
+Process https://news.yandex.ru/auto.rss...
+
+Госстрой Башкирии представил первый опыт использования банка земли (https://yandex.ru/news/story/Gosstroj_Bashkirii_)
+
+Сбербанк выдает крымчанам ипотеку, но не признается (https://yandex.ru/news/story/Sberbank_vydaet_krymch)
+
+В Белгороде улучшат обстановку на дорогах на «Богданке» (https://yandex.ru/news/story/V_Belgorode_uluchshat_obstan)
+```
