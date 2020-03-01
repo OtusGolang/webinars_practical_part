@@ -15,7 +15,7 @@ https://github.com/avelino/awesome-go
 * https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
 * https://medium.com/@zhashkevych/чистая-архитектура-на-golang-cccbfdc95eba
 * https://en.wikipedia.org/wiki/Dependency_injection
-* https://github.com/google/wire* 
+* https://github.com/google/wire
 
 ### Блоги / Телеграм каналы
 * https://dave.cheney.net/
@@ -111,7 +111,8 @@ https://github.com/avelino/awesome-go
 * https://habrahabr.ru/company/badoo/blog/328722/
 
 ### Микросервисы
-* https://about.sourcegraph.com/go/grpc-in-production-alan-shreve/ + https://www.youtube.com/watch?v=7FZ6ZyzGex0
+* https://about.sourcegraph.com/go/grpc-in-production-alan-shreve/
+* https://www.youtube.com/watch?v=7FZ6ZyzGex0
 * https://grpc.io/
 * https://github.com/grpc/grpc-go
 * https://github.com/grpc-ecosystem
