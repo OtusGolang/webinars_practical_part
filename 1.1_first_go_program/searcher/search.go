@@ -11,7 +11,7 @@ import (
 // Search выполняет конкурентный поиск новостей со словом keyword среди рассылок feeds.
 // Результат записывается в out
 func Search(feeds []string, keyword string, out io.Writer) {
-	var outMu sync.Mutex
+	outCh := make(chan string)
 
 	// Механизм синхронизации группы горутин
 	var wg sync.WaitGroup
@@ -22,21 +22,28 @@ func Search(feeds []string, keyword string, out io.Writer) {
 		go func(url string) {
 			defer wg.Done()
 
-			// Ошибки игнорируются, но в реальной разработке их стоит логировать
-			// или выводить в отдельный канал
-			_, _ = fmt.Fprintf(out, "Process %s...\n", url)
-			_ = getFeedAndSearch(url, keyword, out, &outMu)
+			// Ошибки игнорируются, но в реальной разработке их стоит хотя бы логировать
+			outCh <- fmt.Sprintf("Process %s...\n", url)
+			_ = getFeedAndSearch(url, keyword, outCh)
 		}(f)
 	}
 
-	// Ждём, пока не будут обработаны все RSS-ленты
-	wg.Wait()
+	go func() {
+		// Ждём, пока не будут обработаны все RSS-ленты
+		wg.Wait()
+		close(outCh)
+	}()
+
+	// Читаем из канала, пока его не закроют
+	for msg := range outCh {
+		_, _ = out.Write([]byte(msg))
+	}
 }
 
 // getFeedAndSearch получает XML по url, парсит RSS ленту и ищет в ней новости с keyword
-func getFeedAndSearch(url, keyword string, out io.Writer, outMut sync.Locker) error {
+func getFeedAndSearch(url, keyword string, outCh chan<- string) error {
 	// Выполняем HTTP GET-запрос
-	resp, err := http.Get(url)
+	resp, err := http.Get(url) //nolint:gosec
 	if err != nil {
 		return err
 	}
@@ -51,18 +58,8 @@ func getFeedAndSearch(url, keyword string, out io.Writer, outMut sync.Locker) er
 	// Проходимся по новостям
 	for _, item := range feed.Channel.Items {
 		if item.HasKeyword(keyword) {
-			if err := safeWrite(fmt.Sprintf("\n%s (%s)\n", item.Title, item.Link), out, outMut); err != nil {
-				return err
-			}
+			outCh <- fmt.Sprintf("\n%s (%s)\n", item.Title, item.Link)
 		}
 	}
 	return nil
-}
-
-// safeWrite синхронизирует запись в out между горутинами
-func safeWrite(str string, out io.Writer, outMut sync.Locker) (err error) {
-	outMut.Lock()
-	defer outMut.Unlock()
-	_, err = fmt.Fprint(out, str)
-	return
 }
