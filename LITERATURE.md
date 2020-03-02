@@ -48,7 +48,7 @@ https://github.com/avelino/awesome-go
 * http://gorm.io/
 * http://motion-express.com/blog/gorm:-a-simple-guide-on-crud
 * https://godoc.org/github.com/jinzhu/gorm
-### Нереляционные
+#### Нереляционные
 * https://godoc.org/github.com/bradfitz/gomemcache/memcache
 * https://godoc.org/github.com/garyburd/redigo/redis
 * https://godoc.org/gopkg.in/mgo.v2
