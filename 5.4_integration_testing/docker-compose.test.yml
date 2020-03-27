@@ -1,0 +1,69 @@
+version: "3"
+
+networks:
+  rabbit:
+    driver: bridge
+  db:
+    driver: bridge
+
+services:
+  integration_tests:
+    build: tests
+    command: "true"
+    links:
+      - reg_service
+      - notify_service
+    environment:
+      TESTS_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"
+    networks:
+      - rabbit
+
+  reg_service:
+    build: cmd/registration_service
+    depends_on:
+      - postgres
+      - rabbit
+    restart: on-failure
+    ports:
+      - "8088:8088"
+    environment:
+      REG_SERVICE_DB_DSN: "postgres://test:test@postgres:5432/exampledb?sslmode=disable"
+      REG_SERVICE_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"
+      REG_SERVICE_SERVER_ADDR: ":8088"
+    networks:
+      - rabbit
+      - db
+
+  notify_service:
+    build: cmd/notification_service
+    depends_on:
+      - rabbit
+    restart: on-failure
+    environment:
+      NOTIFY_SERVICE_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"
+    networks:
+      - rabbit
+
+  postgres:
+    image: postgres:11.1
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: exampledb
+    volumes:
+      # https://github.com/docker-library/postgres/blob/master/docker-entrypoint.sh#L145
+      - ./scripts/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    networks:
+      - db
+
+  rabbit:
+    image: rabbitmq:3.7.17-management
+    ports:
+      - "5672:5672"
+    volumes:
+      - ./configs/rabbit.def.json:/etc/rabbitmq/definitions.json:ro
+      - ./configs/rabbit.config:/etc/rabbitmq/rabbitmq.config:ro
+    networks:
+      - rabbit
