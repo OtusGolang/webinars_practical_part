@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package main;
+
+message Person {
+    string name = 1;
+    string surname = 2;
+    uint32 age = 3;
+
+    map<string, uint32> children_age = 4;
+}

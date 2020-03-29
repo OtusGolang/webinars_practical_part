@@ -1,0 +1,4 @@
+go get github.com/uber/go-torch
+git clone https://github.com/brendangregg/FlameGraph
+cd FlameGraph
+go-torch

@@ -1,0 +1,13 @@
+PSQL_DSN=${PSQL_DSN}
+
+#### Псевдокод
+env > config.toml
+
+
+###
+local.env
+export PSQL_DSN="...."
+
+qa.env
+
+###

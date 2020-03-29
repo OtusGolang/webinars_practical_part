@@ -1,0 +1,3 @@
+./wrk -c100 -d2000s -t50 http://127.0.0.1:8080/
+go tool pprof http://localhost:8080/debug/pprof/profile?seconds=5
+go tool pprof http://localhost:8080/debug/pprof/goroutines

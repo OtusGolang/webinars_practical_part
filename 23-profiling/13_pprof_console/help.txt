@@ -1,0 +1,11 @@
+go test -bench=. -benchmem -cpuprofile=cpu.out -memprofile=mem.out -x .
+go tool pprof 13_pprof_console.test cpu.out
+list Slow
+list Fast
+go tool pprof 13_pprof_console.test mem.out
+alloc_objects
+alloc_space
+inuse_objects
+inuse_space
+list Slow
+list Fast

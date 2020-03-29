@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+message Event {
+    string id = 1;
+    string title = 2;
+    string text = 3;
+    string owner = 4;
+    google.protobuf.Timestamp start_time = 5;
+    google.protobuf.Timestamp end_time = 6;
+}
+
+message CreateEventRequest {
+    string title = 1;
+    string text = 2;
+    google.protobuf.Timestamp start_time = 3;
+    google.protobuf.Timestamp end_time = 4;
+}
+
+message CreateEventResponse {
+    oneof result {
+        Event event = 1;
+        string error = 2;
+    }
+}
+
+service CalendarService {
+    rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse) {}
+}

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package homework;
+
+option go_package = "homeworkpb";
+
+
+service HomeworkChecker {
+    rpc CheckHomework (CheckHomeworkRequest) returns (CheckHomeworkResponse);
+    rpc CheckAllHomeworks (CheckAllHomeworksRequest) returns (stream CheckHomeworkResponse) {};
+    rpc SubmitAllHomeworks (stream SubmitAllHomeworksRequest) returns (SubmitAllHomeworksResponse) {};
+    rpc RealtimeFeedback (stream CheckHomeworkRequest) returns (stream CheckHomeworkResponse) {};
+}
+
+message CheckHomeworkRequest {
+    int32 hw = 1;
+    string code = 2;
+}
+
+message CheckHomeworkResponse {
+    int32 hw = 1;
+    int32 grade = 2;
+}
+
+message CheckAllHomeworksRequest {
+    repeated int32 hw = 1;
+}
+
+message SubmitAllHomeworksRequest {
+    int32 hw = 1;
+    string code = 2;
+}
+
+message SubmitAllHomeworksResponse {
+    bool accepted = 1;
+}
