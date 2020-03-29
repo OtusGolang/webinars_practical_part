@@ -55,7 +55,7 @@ $ docker-compose exec postgres psql -U test -d exampledb -c "select * from users
 ```
 
 Проверяем, что было опубликовано событие о новой регистрации
-<img src="https://github.com/OtusGolang/webinars_practical_part/tree/master/5.4_integration_testing/assets/user_reg_event.png" width="600">
+<img src="https://github.com/OtusGolang/webinars_practical_part/raw/master/5.4_integration_testing/assets/user_reg_event.png" width="600">
 
 **Теперь у нас есть возможность писать тесты и дебажить их локально,
 так как вся инфраструктура поднята в Docker, а необходимые порты пробросаны на host.**
