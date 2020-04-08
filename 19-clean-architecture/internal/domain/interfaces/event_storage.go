@@ -2,8 +2,9 @@ package interfaces
 
 import (
 	"context"
-	"github.com/otusteam/go/cleancalendar/internal/domain/entities"
 	"time"
+
+	"github.com/otusteam/go/cleancalendar/internal/domain/entities"
 )
 
 type EventStorage interface {

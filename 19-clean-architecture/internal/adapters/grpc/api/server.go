@@ -2,10 +2,11 @@ package api
 
 import (
 	"context"
-	"github.com/golang/protobuf/ptypes"
-	"google.golang.org/grpc"
 	"net"
 	"time"
+
+	"github.com/golang/protobuf/ptypes"
+	"google.golang.org/grpc"
 
 	"github.com/otusteam/go/cleancalendar/internal/domain/errors"
 	"github.com/otusteam/go/cleancalendar/internal/domain/usecases"

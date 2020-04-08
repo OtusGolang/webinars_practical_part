@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"log"
+
+	"github.com/spf13/cobra"
+
 	"github.com/otusteam/go/cleancalendar/internal/adapters/grpc/api"
 	"github.com/otusteam/go/cleancalendar/internal/adapters/maindb"
 	"github.com/otusteam/go/cleancalendar/internal/domain/usecases"
-	"github.com/spf13/cobra"
-	"log"
 )
 
 // TODO: dependency injection, orchestrator

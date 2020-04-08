@@ -2,10 +2,12 @@ package maindb
 
 import (
 	"context"
+	"time"
+
 	_ "github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
+
 	"github.com/otusteam/go/cleancalendar/internal/domain/entities"
-	"time"
 )
 
 // implements domain.interfaces.EventStorage

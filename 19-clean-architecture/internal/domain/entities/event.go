@@ -1,8 +1,9 @@
 package entities
 
 import (
-	"github.com/satori/go.uuid"
 	"time"
+
+	"github.com/satori/go.uuid"
 )
 
 type Event struct {

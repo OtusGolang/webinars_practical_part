@@ -2,10 +2,12 @@ package usecases
 
 import (
 	"context"
+	"time"
+
+	"github.com/satori/go.uuid"
+
 	"github.com/otusteam/go/cleancalendar/internal/domain/entities"
 	"github.com/otusteam/go/cleancalendar/internal/domain/interfaces"
-	"github.com/satori/go.uuid"
-	"time"
 )
 
 type EventUsecases struct {
