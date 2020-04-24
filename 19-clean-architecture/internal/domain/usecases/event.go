@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/otusteam/go/cleancalendar/internal/domain/entities"
 	"github.com/otusteam/go/cleancalendar/internal/domain/interfaces"
@@ -17,7 +17,7 @@ type EventUsecases struct {
 func (es *EventUsecases) CreateEvent(ctx context.Context, owner, title, text string, startTime *time.Time, endTime *time.Time) (*entities.Event, error) {
 	// TODO: persistence, validation
 	event := &entities.Event{
-		Id:        uuid.NewV4(),
+		ID:        uuid.NewV4(),
 		Owner:     owner,
 		Title:     title,
 		Text:      text,

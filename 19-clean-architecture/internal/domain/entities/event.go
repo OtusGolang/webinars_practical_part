@@ -7,7 +7,7 @@ import (
 )
 
 type Event struct {
-	Id        uuid.UUID
+	ID        uuid.UUID
 	Owner     string
 	Title     string
 	Text      string

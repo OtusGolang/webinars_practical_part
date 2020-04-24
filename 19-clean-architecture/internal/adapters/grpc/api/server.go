@@ -8,12 +8,16 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc"
 
+	"github.com/otusteam/go/cleancalendar/internal/domain/entities"
 	"github.com/otusteam/go/cleancalendar/internal/domain/errors"
-	"github.com/otusteam/go/cleancalendar/internal/domain/usecases"
 )
 
+type eventUsecaseInterface interface {
+	CreateEvent(ctx context.Context, owner, title, text string, startTime *time.Time, endTime *time.Time) (*entities.Event, error)
+}
+
 type CalendarServer struct {
-	EventUsecases *usecases.EventUsecases
+	EventUsecases eventUsecaseInterface
 }
 
 // implements CalendarServiceServer
@@ -55,7 +59,7 @@ func (cs *CalendarServer) CreateEvent(ctx context.Context, req *CreateEventReque
 		}
 	}
 	protoEvent := &Event{
-		Id:    event.Id.String(),
+		Id:    event.ID.String(),
 		Title: event.Title,
 		Text:  event.Text,
 		Owner: event.Owner,

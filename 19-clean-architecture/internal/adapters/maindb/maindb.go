@@ -33,7 +33,7 @@ func (pges *PgEventStorage) SaveEvent(ctx context.Context, event *entities.Event
 		VALUES (:id, :owner, :title, :text, :start_time, :end_time)
 	`
 	_, err := pges.db.NamedExecContext(ctx, query, map[string]interface{}{
-		"id":         event.Id.String(),
+		"id":         event.ID.String(),
 		"owner":      event.Owner,
 		"title":      event.Title,
 		"text":       event.Text,
