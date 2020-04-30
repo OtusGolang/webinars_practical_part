@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/DATA-DOG/godog"
+	"github.com/cucumber/godog"
 )
 
 const delay = 5 * time.Second
