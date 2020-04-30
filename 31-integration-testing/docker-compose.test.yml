@@ -24,8 +24,8 @@ services:
       - postgres
       - rabbit
     restart: on-failure
-    ports:
-      - "8088:8088"
+    expose:
+      - "8088"
     environment:
       REG_SERVICE_DB_DSN: "postgres://test:test@postgres:5432/exampledb?sslmode=disable"
       REG_SERVICE_AMQP_DSN: "amqp://guest:guest@rabbit:5672/"
@@ -46,8 +46,8 @@ services:
 
   postgres:
     image: postgres:11.1
-    ports:
-      - "5432:5432"
+    expose:
+      - "5432"
     environment:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
@@ -60,8 +60,8 @@ services:
 
   rabbit:
     image: rabbitmq:3.7.17-management
-    ports:
-      - "5672:5672"
+    expose:
+      - "5672"
     volumes:
       - ./configs/rabbit.def.json:/etc/rabbitmq/definitions.json:ro
       - ./configs/rabbit.config:/etc/rabbitmq/rabbitmq.config:ro
