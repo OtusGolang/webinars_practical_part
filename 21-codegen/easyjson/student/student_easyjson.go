@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonB83d7b77Decode28CodegenEasyjsonStudent(in *jlexer.Lexer, out *Student) {
+func easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(in *jlexer.Lexer, out *Student) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -72,7 +72,7 @@ func easyjsonB83d7b77Decode28CodegenEasyjsonStudent(in *jlexer.Lexer, out *Stude
 		in.Consumed()
 	}
 }
-func easyjsonB83d7b77Encode28CodegenEasyjsonStudent(out *jwriter.Writer, in Student) {
+func easyjsonB83d7b77EncodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(out *jwriter.Writer, in Student) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -118,23 +118,23 @@ func easyjsonB83d7b77Encode28CodegenEasyjsonStudent(out *jwriter.Writer, in Stud
 // MarshalJSON supports json.Marshaler interface
 func (v Student) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonB83d7b77Encode28CodegenEasyjsonStudent(&w, v)
+	easyjsonB83d7b77EncodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Student) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonB83d7b77Encode28CodegenEasyjsonStudent(w, v)
+	easyjsonB83d7b77EncodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Student) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonB83d7b77Decode28CodegenEasyjsonStudent(&r, v)
+	easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Student) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonB83d7b77Decode28CodegenEasyjsonStudent(l, v)
+	easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(l, v)
 }
