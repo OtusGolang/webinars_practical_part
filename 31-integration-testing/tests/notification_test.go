@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/DATA-DOG/godog"
-	"github.com/DATA-DOG/godog/gherkin"
+	"github.com/cucumber/godog"
+	"github.com/cucumber/messages-go/v10"
 	"github.com/streadway/amqp"
 )
 
@@ -45,7 +45,7 @@ func panicOnErr(err error) {
 	}
 }
 
-func (test *notifyTest) startConsuming(interface{}) {
+func (test *notifyTest) startConsuming(*messages.Pickle) {
 	test.messages = make([][]byte, 0)
 	test.messagesMutex = new(sync.RWMutex)
 	test.stopSignal = make(chan struct{})
@@ -82,7 +82,7 @@ func (test *notifyTest) startConsuming(interface{}) {
 	}(test.stopSignal)
 }
 
-func (test *notifyTest) stopConsuming(interface{}, error) {
+func (test *notifyTest) stopConsuming(*messages.Pickle, error) {
 	test.stopSignal <- struct{}{}
 
 	panicOnErr(test.ch.Close())
@@ -122,7 +122,7 @@ func (test *notifyTest) theResponseShouldMatchText(text string) error {
 	return nil
 }
 
-func (test *notifyTest) iSendRequestToWithData(httpMethod, addr, contentType string, data *gherkin.DocString) (err error) {
+func (test *notifyTest) iSendRequestToWithData(httpMethod, addr, contentType string, data *messages.PickleStepArgument_PickleDocString) (err error) {
 	var r *http.Response
 
 	switch httpMethod {
