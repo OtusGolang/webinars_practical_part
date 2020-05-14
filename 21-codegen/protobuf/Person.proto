@@ -4,28 +4,25 @@ package main;
 
 import "google/protobuf/timestamp.proto";
 
-//enum Place {
-//    UNSET = 0;
-//    MOSCOW = 1;
-//    ST_PETERSBURG = 2;
-//}
-//
-//message People {
-//    repeated Person person = 1;
-//}
-//
-//message Person {
-//    string name = 1;
-//    repeated string mobile = 3;
-//    repeated string email = 4;
-//    Place place = 5;
-//    google.protobuf.Timestamp t = 6;
-//}
-//
-//message Address {
-//    string street = 1;
-//    int32 number = 2;
-//}
-//
-//
+enum Place {
+    UNSET = 0;
+    MOSCOW = 1;
+    ST_PETERSBURG = 2;
+}
 
+message People {
+    repeated Person person = 1;
+}
+
+message Person {
+    string name = 1;
+    repeated string mobile = 3;
+    repeated string email = 4;
+    Place place = 5;
+    google.protobuf.Timestamp t = 6;
+}
+
+message Address {
+    string street = 1;
+    int32 number = 2;
+}

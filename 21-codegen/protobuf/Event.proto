@@ -4,24 +4,8 @@ package main;
 
 import "google/protobuf/timestamp.proto";
 
-// Сгенерировать схему/код для работы с событиями календаря:
-//
-//название
-//начало
-//конец
-//тип события (enum: встреча, напоминание, другое)
-
-message Event {
-    enum Type {
-        UNKNOWN = 0;
-        MEETING = 1;
-        NOTIFY = 2;
-    }
-
-    reserved 1;
-
-    google.protobuf.Timestamp start = 2;
-    google.protobuf.Timestamp end = 3;
-    Type type = 4;
-    string foo = 5;
-}
+// Тренировка. Сгенерировать схему/код для работы с событиями календаря:
+// - название
+// - начало
+// - конец
+// - тип события (enum: встреча, напоминание, другое)
