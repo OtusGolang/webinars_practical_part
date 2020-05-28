@@ -1,0 +1,2 @@
+[psql]
+dsn = "host=localhost port=5432 user=anthony password=anthony dbname=books sslmode=disable"
