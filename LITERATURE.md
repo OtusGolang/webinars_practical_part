@@ -3,6 +3,12 @@
 ### Основная ссылка со списком библиотек
 https://github.com/avelino/awesome-go
 
+### Туториалы
+* https://tour.golang.org/
+* http://golang-book.ru/
+* https://gobyexample.com/
+* https://golangs.org/
+
 ### Архитектура / Практики
 * https://go-proverbs.github.io/
 * https://golang.org/doc/effective_go.html
@@ -85,7 +91,6 @@ https://github.com/avelino/awesome-go
 
 ### Книги
 * https://www.programming-books.io/essential/go/
-* http://golang-book.ru/
 * https://github.com/dgryski/go-perfbook
 * https://vk.com/proglib/golang
 * https://github.com/golang/go/wiki/LearnConcurrency
