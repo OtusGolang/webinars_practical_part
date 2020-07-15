@@ -9,8 +9,10 @@ func main() {
 	doWork := func(done <-chan interface{}, strings <-chan string) <-chan interface{} {
 		terminated := make(chan interface{})
 		go func() {
-			defer fmt.Println("doWork exited.")
-			defer close(terminated)
+			defer func() {
+				fmt.Println("doWork exited.")
+				close(terminated)
+			}()
 			for {
 				select {
 				case s := <-strings:

@@ -9,8 +9,10 @@ func main() {
 	doWork := func(strings <-chan string) <-chan interface{} {
 		completed := make(chan interface{})
 		go func() {
-			defer fmt.Println("doWork exited.")
-			defer close(completed)
+			defer func() {
+				fmt.Println("doWork exited.")
+				close(completed)
+			}()
 			for s := range strings {
 				fmt.Println(s)
 			}

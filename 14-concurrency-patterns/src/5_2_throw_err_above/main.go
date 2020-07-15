@@ -17,8 +17,17 @@ func main() {
 			defer close(results)
 			for _, url := range urls {
 				var result Result
-				resp, err := http.Get(url)
-				result = Result{Error: err, Response: resp}
+
+				result.Response, result.Error = http.Get(url)
+
+				//resp, err := http.Get(url)
+				//
+				//if err != nil {
+				//	result = Result{Error: err, Response: nil}
+				//} else {
+				//	result = Result{Error: nil, Response: resp}
+				//}
+
 				select {
 				case <-done:
 					return

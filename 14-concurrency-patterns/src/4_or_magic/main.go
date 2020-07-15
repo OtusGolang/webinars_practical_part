@@ -7,17 +7,19 @@ import (
 
 func main() {
 	var or func(channels ...<-chan interface{}) <-chan interface{}
+
 	or = func(channels ...<-chan interface{}) <-chan interface{} {
 		switch len(channels) {
 		case 0:
 			return nil
 		case 1:
-			return channels[0]
+			return channels[0] // <-or(ch) == <-ch
 		}
 
 		orDone := make(chan interface{})
 		go func() {
 			defer close(orDone)
+
 			switch len(channels) {
 			case 2:
 				select {

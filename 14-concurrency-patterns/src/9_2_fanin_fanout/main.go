@@ -8,16 +8,22 @@ import (
 )
 
 func main() {
-	rand := func() interface{} { return rand.Intn(100000000) }
+	randFn := func() interface{} { return rand.Intn(100000000) }
 
 	done := make(chan interface{})
 	defer close(done)
 
 	start := time.Now()
 
-	randIntStream := toInt(done, repeatFn(done, rand))
+	// rand -> repeatFn -> toInt 				fanIn -> take ->
+	//						  -> primeFinder ->
+	//						  -> primeFinder ->
+	//						  -> primeFinder ->
+	//						  -> primeFinder ->
+	randIntStream := toInt(done, repeatFn(done, randFn))
 	numFinders := runtime.NumCPU()
 	fmt.Printf("Spinning up %d prime finders.\n", numFinders)
+
 	finders := make([]<-chan interface{}, numFinders)
 	for i := 0; i < numFinders; i++ {
 		finders[i] = primeFinder(done, randIntStream)
@@ -28,5 +34,5 @@ func main() {
 		fmt.Printf("\t%d\n", prime)
 	}
 
-	fmt.Printf("Search took: %v", time.Since(start))
+	fmt.Printf("Search took: %v", time.Since(start)) // ~3s
 }
