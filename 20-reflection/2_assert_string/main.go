@@ -7,8 +7,8 @@ import (
 
 func assertString(iv interface{}) (string, bool) {
 	rv := reflect.ValueOf(iv)
-	s := ""
-	ok := false
+	var s string
+	var ok bool
 	if rv.Kind() == reflect.String {
 		s = rv.String()
 		ok = true
@@ -20,6 +20,7 @@ func main() {
 	var iv interface{} = "hello"
 	s, ok := assertString(iv)
 	fmt.Println(s, ok)
+
 	s2, ok := assertString(42)
 	fmt.Println(s2, ok)
 }

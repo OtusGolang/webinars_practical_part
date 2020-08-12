@@ -1,12 +1,11 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 )
 
-type St struct {
+type Student struct {
 	Name     string
 	LastName string
 	Age      int
@@ -15,12 +14,14 @@ type St struct {
 func mapToStruct(mp map[string]interface{}, iv interface{}) error {
 	v := reflect.ValueOf(iv)
 	if v.Kind() != reflect.Ptr {
-		return errors.New("not a pointer to struct")
+		return fmt.Errorf("%T is not a pointer", iv)
 	}
+
 	v = v.Elem()
 	if v.Kind() != reflect.Struct {
-		return errors.New("not a pointer to struct")
+		return fmt.Errorf("%T is not a pointer to struct", iv)
 	}
+
 	t := v.Type()
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i) // reflect.StructField
@@ -28,16 +29,16 @@ func mapToStruct(mp map[string]interface{}, iv interface{}) error {
 		if val, ok := mp[field.Name]; ok {
 			mfv := reflect.ValueOf(val)
 			if mfv.Kind() != fv.Kind() {
-				return errors.New("incomatible type for " + field.Name)
+				return fmt.Errorf("incompatible type %T for %s (%T)", mfv, field.Name, fv)
 			}
-			fv.Set(mfv)
+			fv.Set(mfv) // CanSet?
 		}
 	}
 	return nil
 }
 
 func main() {
-	var st St
+	var st Student
 	mp := map[string]interface{}{
 		"Name":           "Mary",
 		"Age":            42,

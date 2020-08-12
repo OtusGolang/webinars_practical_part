@@ -1,12 +1,11 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 )
 
-type St struct {
+type Student struct {
 	Name string
 	Age  int
 }
@@ -14,10 +13,11 @@ type St struct {
 func structToMap(iv interface{}) (map[string]interface{}, error) {
 	v := reflect.ValueOf(iv)
 	if v.Kind() != reflect.Struct {
-		return nil, errors.New("not a struct")
+		return nil, fmt.Errorf("expected a struct, but received %T", iv)
 	}
+
 	t := v.Type()
-	mp := make(map[string]interface{})
+	mp := make(map[string]interface{}, t.NumField())
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i) // reflect.StructField
 		fv := v.Field(i)    // reflect.Value
@@ -27,7 +27,7 @@ func structToMap(iv interface{}) (map[string]interface{}, error) {
 }
 
 func main() {
-	st := St{"Boby", 18}
+	st := Student{"Bob", 18}
 	mp, err := structToMap(st)
 	fmt.Printf("MAP: %#v\nERR: %s\n", mp, err)
 }
