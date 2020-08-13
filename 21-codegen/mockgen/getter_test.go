@@ -21,7 +21,7 @@ func TestGetPage(t *testing.T) {
 		g := mocks.NewMockGetter(ctrl)
 		g.EXPECT().Get("test url 1").Return(nil, errors.New("400"))
 
-		resp, err := GetPage(g, "test url 1")
+		resp, err := GetPage( "test url 1", WithGetter(g))
 		require.NotNil(t, err)
 		require.Nil(t, resp)
 	})
@@ -35,7 +35,7 @@ func TestGetPage(t *testing.T) {
 			Body: ioutil.NopCloser(bytes.NewBuffer([]byte("some data"))),
 		}, nil)
 
-		resp, err := GetPage(g, "test url 2")
+		resp, err := GetPage("test url 2", WithGetter(g))
 		require.Nil(t, err)
 		require.Equal(t, []byte("some data"), resp)
 	})

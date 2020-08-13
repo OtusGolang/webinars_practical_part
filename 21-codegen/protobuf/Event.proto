@@ -4,6 +4,8 @@ package main;
 
 import "google/protobuf/timestamp.proto";
 
+option go_package = ".;main";
+
 // Тренировка. Сгенерировать схему/код для работы с событиями календаря:
 // - название
 // - начало

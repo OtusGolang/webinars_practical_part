@@ -11,8 +11,15 @@ type Getter interface {
 	Get(url string) (resp *http.Response, err error)
 }
 
-func GetPage(g Getter, url string) ([]byte, error) {
-	resp, err := g.Get(url)
+func GetPage(url string, opts ...Option) ([]byte, error) {
+	options := GetPageOptions{
+		Getter: http.DefaultClient,
+	}
+	for _, o := range opts {
+		o(&options)
+	}
+
+	resp, err := options.Getter.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to GET %q: %w", url, err)
 	}

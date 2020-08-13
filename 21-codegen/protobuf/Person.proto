@@ -4,6 +4,8 @@ package main;
 
 import "google/protobuf/timestamp.proto";
 
+option go_package = ".;main";
+
 enum Place {
     UNSET = 0;
     MOSCOW = 1;
