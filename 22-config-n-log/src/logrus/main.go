@@ -1,25 +1,29 @@
 package main
 
 import (
-	"github.com/sirupsen/logrus"
 	"sync/atomic"
+
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	var log = logrus.New()
 	log.AddHook(&Hook{})
+
 	log.Infoln(errorCounter)
+
 	log.Error("Error")
+
 	log.Infoln(errorCounter)
 }
 
 var errorCounter, warningCounter uint64
 
-//Hook for logrus
+//Hook for logrus.
 type Hook struct {
 }
 
-//Execute hook
+//Fire executes hook.
 func (hook *Hook) Fire(entry *logrus.Entry) error {
 	switch entry.Level {
 	case logrus.PanicLevel:
@@ -35,7 +39,7 @@ func (hook *Hook) Fire(entry *logrus.Entry) error {
 	return nil
 }
 
-//Return slice of logrus levels with witch hook work
+//Levels returns a slice of logrus levels with witch hook work.
 func (hook *Hook) Levels() []logrus.Level {
 	return []logrus.Level{
 		logrus.PanicLevel,

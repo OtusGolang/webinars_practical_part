@@ -3,29 +3,32 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"time"
+
+	"github.com/heetch/confita"
 	"github.com/heetch/confita/backend/env"
 	"github.com/heetch/confita/backend/file"
-	"time"
 )
-import "github.com/heetch/confita"
 
+//serviceName=go-is-go go run ./src/confita
 func main() {
-
-	// serviceName=go-is-go go run confita/main.go
 	cfg := Config{
 		ServiceName: "ConfitaTest",
 		Port:        5656,
 		Timeout:     5 * time.Second,
 	}
+
 	loader := confita.NewLoader(
-		file.NewBackend("/Users/a.zheltak/GolandProjects/awesomeProject/config/config.json"),
+		file.NewBackend("./config/config.json"),
 		env.NewBackend(),
 	)
 	err := loader.Load(context.Background(), &cfg)
 	if err != nil {
-		panic(err)
+		log.Fatalf("failed to load: %v", err)
 	}
-	fmt.Print(cfg)
+
+	fmt.Printf("%+v\n", cfg)
 }
 
 type Config struct {

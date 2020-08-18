@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/caarlos0/env"
 	"time"
+
+	"github.com/caarlos0/env"
 )
 
 type config struct {
@@ -16,7 +17,7 @@ type config struct {
 }
 
 /*
-PRODUCTION=true HOSTS="host1:host2:host3" DURATION=1s go run ./caarlos-env/main.go
+PRODUCTION=true HOSTS="host1:host2:host3" DURATION=1s go run ./src/caarlos-env
 {Home:/your/home Port:3000 IsProduction:true Hosts:[host1 host2 host3] Duration:1s}
 */
 func main() {
