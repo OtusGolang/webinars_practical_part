@@ -6,7 +6,6 @@ import (
 	"net"
 )
 
-
 //TODO: Make worker
 
 //TODO: SHOW BROADCAST
@@ -21,7 +20,7 @@ func main() {
 
 	defer l.Close()
 
-	msg := make([]byte, 4, 4)
+	msg := make([]byte, 1024)
 	for {
 		length, fromAddr, err := l.ReadFromUDP(msg)
 		if err != nil {

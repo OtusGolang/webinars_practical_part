@@ -12,7 +12,8 @@ import (
 
 func readRoutine(ctx context.Context, conn net.Conn) {
 	scanner := bufio.NewScanner(conn)
-	OUTER: for {
+OUTER:
+	for {
 		select {
 		case <-ctx.Done():
 			break OUTER
@@ -30,7 +31,8 @@ func readRoutine(ctx context.Context, conn net.Conn) {
 
 func writeRoutine(ctx context.Context, conn net.Conn) {
 	scanner := bufio.NewScanner(os.Stdin)
-	OUTER: for {
+OUTER:
+	for {
 		select {
 		case <-ctx.Done():
 			break OUTER
@@ -53,7 +55,7 @@ func writeRoutine(ctx context.Context, conn net.Conn) {
 func main() {
 	dialer := &net.Dialer{}
 	ctx := context.Background()
-	ctx, cancel := context.WithTimeout(ctx, 5 * time.Minute)
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Minute)
 
 	conn, err := dialer.DialContext(ctx, "tcp", "127.0.0.1:3302")
 	if err != nil {
