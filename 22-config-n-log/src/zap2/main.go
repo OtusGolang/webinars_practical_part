@@ -1,14 +1,16 @@
 package main
 
 import (
-	"go.uber.org/zap"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 func main() {
-	url := "test.test/best"
 	logger := zap.NewExample()
 	defer logger.Sync()
+
+	url := "test.test/best"
 	logger.Info("failed to fetch URL",
 		// Structured context as strongly typed Field values.
 		zap.String("url", url),

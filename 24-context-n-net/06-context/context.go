@@ -29,10 +29,11 @@ func main() {
 		wg.Add(1)
 		go func(id int) {
 			emulateLongOperation(ctx, id)
-			//cancel()
 			wg.Done()
 		}(i)
 	}
 
+	//time.Sleep(time.Second)
+	//cancel()
 	wg.Wait()
 }

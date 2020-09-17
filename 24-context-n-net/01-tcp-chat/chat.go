@@ -7,7 +7,7 @@ import (
 	"net"
 )
 
-func handleConnection(conn net.Conn)  {
+func handleConnection(conn net.Conn) {
 	defer conn.Close()
 	conn.Write([]byte(fmt.Sprintf("Welcome to %s, friend from %s\n", conn.LocalAddr(), conn.RemoteAddr())))
 

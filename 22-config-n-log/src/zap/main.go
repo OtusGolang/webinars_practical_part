@@ -1,12 +1,16 @@
 package main
 
-import "time"
-import "go.uber.org/zap"
+import (
+	"time"
+
+	"go.uber.org/zap"
+)
 
 func main() {
-	url := "test.test/best"
 	logger := zap.NewExample()
 	defer logger.Sync() // flushes buffer, if any
+
+	url := "test.test/best"
 	sugar := logger.Sugar()
 	sugar.Infow("failed to fetch URL",
 		// Structured context as loosely typed key-value pairs.
