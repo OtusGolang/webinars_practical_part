@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 )
 
 type Person struct {
@@ -34,7 +35,8 @@ func main() {
 	fmt.Printf("p1 json %s\n", j)
 
 	var p2 Person
-	json.Unmarshal(j, &p2)
+	if err := json.Unmarshal(j, &p2); err != nil {
+		log.Fatal(err)
+	}
 	fmt.Printf("p2: %v\n", p2)
-
 }

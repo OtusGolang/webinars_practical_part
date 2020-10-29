@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package main;
+option go_package = ".;main";
 
 message Person {
     string name = 1;

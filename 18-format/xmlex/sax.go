@@ -6,8 +6,7 @@ import (
 	"strings"
 )
 
-func main()  {
-
+func main() {
 	data := `
 		<Person id="34">
 			<FullName>Grace R. Emlin</FullName>
@@ -63,7 +62,7 @@ func main()  {
 
 	inFullName := false
 
-	names := []string{}
+	var names []string
 
 	for {
 		token, err := decoder.Token()
@@ -92,8 +91,5 @@ func main()  {
 		}
 
 	}
-
 	fmt.Printf("All names: %v", names)
-
-
 }

@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/golang/protobuf/proto"
 )
 
@@ -15,13 +17,18 @@ func main() {
 	p.ChildrenAge["Maria"] = 2
 	p.ChildrenAge["Alex"] = 5
 
-	marshaled, _ := proto.Marshal(p)
+	marshaled, err := proto.Marshal(p)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Printf("marshaled len %d message = %s\n", len(marshaled), string(marshaled))
+	fmt.Println(marshaled)
 
 	p2 := &Person{}
-	proto.Unmarshal(marshaled, p2)
+	if err := proto.Unmarshal(marshaled, p2); err != nil {
+		log.Fatal(err)
+	}
 
-	fmt.Printf("Unmarshaled %v", p2)
-
+	fmt.Printf("\nUnmarshaled %v", p2)
 }

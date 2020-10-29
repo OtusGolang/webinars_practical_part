@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/xml"
+	"log"
 	"os"
 )
 
 type Address struct {
 	City, State string
 }
+
 type Person struct {
 	XMLName   xml.Name `xml:"person"`
 	Id        int      `xml:"id,attr"`
@@ -20,14 +22,14 @@ type Person struct {
 	Comment string `xml:",comment"`
 }
 
-func main()  {
+func main() {
 	v := &Person{Id: 13, FirstName: "John", LastName: "Doe", Age: 42}
 	v.Comment = " Need more details. "
 	v.Address = Address{"Hanga Roa", "Easter Island"}
 
 	enc := xml.NewEncoder(os.Stdout)
 	enc.Indent("  ", "    ")
-	enc.Encode(v)
+	if err := enc.Encode(v); err != nil {
+		log.Fatal(err)
+	}
 }
-
-

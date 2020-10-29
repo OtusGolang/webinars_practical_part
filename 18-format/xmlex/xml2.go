@@ -3,15 +3,18 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+	"log"
 )
 
 type Email struct {
 	Where string `xml:"where,attr"`
 	Addr  string
 }
+
 type Address struct {
 	City, State string
 }
+
 type Result struct {
 	XMLName xml.Name `xml:"Person"`
 	Name    string   `xml:"FullName"`
@@ -42,6 +45,9 @@ func main() {
 			<State>Easter Island</State>
 		</Person>
 	`
-	xml.Unmarshal([]byte(data), &v)
+
+	if err := xml.Unmarshal([]byte(data), &v); err != nil {
+		log.Fatal(err)
+	}
 	fmt.Printf("%v\n", v)
 }

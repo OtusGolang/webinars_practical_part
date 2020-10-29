@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 )
 
 func main() {
@@ -10,7 +11,9 @@ func main() {
                   "Job":{"Department":"Operations","Title":"Boss"}}`)
 
 	var p2 interface{}
-	json.Unmarshal(j, &p2)
+	if err := json.Unmarshal(j, &p2); err != nil {
+		log.Fatal(err)
+	}
 	fmt.Printf("p2: %v\n", p2)
 
 	person := p2.(map[string]interface{})
