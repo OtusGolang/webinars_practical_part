@@ -32,31 +32,13 @@ func TestClockSleep(t *testing.T) {
 		close(doneCh)
 	}()
 
-	waitFor(t, func() bool {
+	require.Eventually(t, func() bool {
 		return 1 == atomic.LoadInt64(&i)
-	})
+	}, time.Second, 10*time.Millisecond)
 
 	mock.Add(time.Nanosecond)
 
-	waitFor(t, func() bool {
+	require.Eventually(t, func() bool {
 		return 2 == atomic.LoadInt64(&i)
-	})
-}
-
-func waitFor(t *testing.T, fn func() bool) {
-	t.Helper()
-	timer := time.NewTimer(time.Second)
-	defer timer.Stop()
-
-	for {
-		select {
-		case <-timer.C:
-			t.Fatal("wait for second but still not happened")
-		default:
-			if fn() {
-				return
-			}
-			time.Sleep(10 * time.Millisecond)
-		}
-	}
+	}, time.Second, 10*time.Millisecond)
 }

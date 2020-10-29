@@ -3,7 +3,9 @@ package mock_test
 import (
 	"errors"
 	"fmt"
+	"math/rand"
 	"testing"
+	"time"
 
 	"github.com/bxcodec/faker/v3"
 	"github.com/golang/mock/gomock"
@@ -39,6 +41,10 @@ func (s *StoreSuite) SetupTest() {
 	s.mockCtl = gomock.NewController(s.T())
 	s.mockDB = NewMockUsersDB(s.mockCtl)
 	s.store = mock.NewUserStore(s.mockDB)
+
+	var seed int64 = time.Now().UnixNano()
+	s.T().Logf("rand seed: %d", seed)
+	rand.Seed(seed)
 }
 
 func (s *StoreSuite) TeardownTest() {
