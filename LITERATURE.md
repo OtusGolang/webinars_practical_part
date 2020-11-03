@@ -54,6 +54,7 @@ https://github.com/avelino/awesome-go
 * http://gorm.io/
 * http://motion-express.com/blog/gorm:-a-simple-guide-on-crud
 * https://godoc.org/github.com/jinzhu/gorm
+
 #### Нереляционные
 * https://godoc.org/github.com/bradfitz/gomemcache/memcache
 * https://godoc.org/github.com/garyburd/redigo/redis
@@ -178,6 +179,8 @@ https://github.com/avelino/awesome-go
 ### Стайлгайды:
 * https://github.com/uber-go/guide/blob/master/style.md
 * https://github.com/cristaloleg/go-advice
+* https://talks.golang.org/2014/names.slide
+* https://github.com/golang/go/wiki/CodeReviewComments
 
 ### Управление зависимостями:
 * https://github.com/golang/dep
