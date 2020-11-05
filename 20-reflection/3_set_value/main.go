@@ -7,7 +7,7 @@ import (
 
 func main() {
 	x := 3.4
-	p := reflect.ValueOf(x)
+	p := reflect.ValueOf(&x)
 	fmt.Println(p.Type(), ":", p.CanSet()) // ?
 
 	v := p.Elem()
