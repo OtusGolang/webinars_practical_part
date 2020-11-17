@@ -10,17 +10,19 @@ type A struct {
 }
 
 func BenchmarkReuseObject(b *testing.B) {
+	buf := []byte("{\"I\": 32}")
 	for i := 0; i < b.N; i++ {
 		a := &A{}
-		json.Unmarshal([]byte("{\"i\": 32}"), a)
+		json.Unmarshal(buf, a)
 	}
 }
 
 // func BenchmarkReuseObject(b *testing.B) {
+// 	buf := []byte("{\"I\": 32}")
 // 	a := &A{}
 // 	for i := 0; i < b.N; i++ {
 // 		*a = A{}
-// 		json.Unmarshal([]byte("{\"i\": 32}"), a)
+// 		json.Unmarshal(buf, a)
 // 	}
 // }
 
@@ -30,10 +32,11 @@ func BenchmarkReuseObject(b *testing.B) {
 // 			return &A{}
 // 		},
 // 	}
+// 	buf := []byte("{\"I\": 32}")
 // 	var a *A
 // 	for i := 0; i < b.N; i++ {
 // 		a = p.Get().(*A)
-// 		json.Unmarshal([]byte("{\"i\": 32}"), a)
+// 		json.Unmarshal(buf, a)
 // 		p.Put(a)
 // 	}
 // }
