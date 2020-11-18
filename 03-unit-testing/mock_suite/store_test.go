@@ -59,7 +59,7 @@ func (s *StoreSuite) TestDuplicate() {
 	s.Require().NotEqual(newID, user1.ID)
 }
 
-var errTest = errors.New("test error")
+var errAddUser = errors.New("test error")
 
 func (s *StoreSuite) TestDuplicateErr() {
 	user1 := mock.User{
@@ -69,10 +69,10 @@ func (s *StoreSuite) TestDuplicateErr() {
 	}
 
 	s.mockDB.EXPECT().FindUser(user1.ID).Return(user1, nil)
-	s.mockDB.EXPECT().AddUser(gomock.Any()).Return(errTest)
+	s.mockDB.EXPECT().AddUser(gomock.Any()).Return(errAddUser)
 	_, err := s.store.Duplicate(user1.ID)
 
-	s.Require().EqualError(err, errTest.Error())
+	s.Require().EqualError(err, errAddUser.Error())
 }
 
 func TestStoreSuire(t *testing.T) {
