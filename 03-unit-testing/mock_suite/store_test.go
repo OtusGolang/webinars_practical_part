@@ -59,6 +59,8 @@ func (s *StoreSuite) TestDuplicate() {
 	s.Require().NotEqual(newID, user1.ID)
 }
 
+var errAddUser = errors.New("test error")
+
 func (s *StoreSuite) TestDuplicateErr() {
 	user1 := mock.User{
 		ID:    "test_user_1",
@@ -66,12 +68,11 @@ func (s *StoreSuite) TestDuplicateErr() {
 		Phone: "8-911-234-4567",
 	}
 
-	testErr := errors.New("test error")
 	s.mockDB.EXPECT().FindUser(user1.ID).Return(user1, nil)
-	s.mockDB.EXPECT().AddUser(gomock.Any()).Return(testErr)
+	s.mockDB.EXPECT().AddUser(gomock.Any()).Return(errAddUser)
 	_, err := s.store.Duplicate(user1.ID)
 
-	s.Require().EqualError(err, testErr.Error())
+	s.Require().EqualError(err, errAddUser.Error())
 }
 
 func TestStoreSuire(t *testing.T) {
