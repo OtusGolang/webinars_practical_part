@@ -48,6 +48,8 @@ func TestDuplicate(t *testing.T) {
 	require.NotEqual(t, newID, user1.ID)
 }
 
+var errAddUser = errors.New("test error")
+
 func TestDuplicateErr(t *testing.T) {
 	mockCtl := gomock.NewController(t)
 	defer mockCtl.Finish()
@@ -61,10 +63,9 @@ func TestDuplicateErr(t *testing.T) {
 		Phone: "8-911-234-4567",
 	}
 
-	testErr := errors.New("test error")
 	mockDB.EXPECT().FindUser(user1.ID).Return(user1, nil)
-	mockDB.EXPECT().AddUser(gomock.Any()).Return(testErr)
+	mockDB.EXPECT().AddUser(gomock.Any()).Return(errAddUser)
 	_, err := store.Duplicate(user1.ID)
 
-	require.EqualError(t, err, testErr.Error())
+	require.EqualError(t, err, errAddUser.Error())
 }
