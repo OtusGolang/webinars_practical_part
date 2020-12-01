@@ -20,7 +20,7 @@ func main() {
 	}
 
 	loader := confita.NewLoader(
-		file.NewBackend("./config/config.json"),
+		file.NewBackend("../../config/config.json"),
 		env.NewBackend(),
 	)
 	err := loader.Load(context.Background(), &cfg)
@@ -35,4 +35,5 @@ type Config struct {
 	ServiceName string        `config:"serviceName"`
 	Port        uint32        `config:"port"`
 	Timeout     time.Duration `config:"timeout"`
+	Directory   string        `json:"directory"`
 }

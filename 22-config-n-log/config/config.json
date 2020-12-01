@@ -1,3 +1,4 @@
 {
-  "serviceName": "go-is-very-otus"
+  "serviceName": "go-is-very-otus",
+  "directory": "${DIRECTORY}"
 }

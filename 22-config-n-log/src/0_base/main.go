@@ -3,33 +3,33 @@ package main
 import (
 	"flag"
 	"fmt"
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
-
-	"gopkg.in/yaml.v2"
 )
 
-func main() {
-	mainConfig.parse()
-	fmt.Println(mainConfig.ServiceName)
-}
+var mainConfig config
 
 type config struct {
 	ServiceName string `yaml:"service_name"`
 }
 
-var mainConfig = config{}
-
 func (m *config) parse() {
 	var configPath = flag.String("config", "./config/config.yml", "path to config file")
 	flag.Parse()
+
 	configYml, err := ioutil.ReadFile(*configPath)
 	if err != nil {
-		log.Fatalf("reading config.yml error %v", err)
+		log.Fatalf("reading config.yml error: %v", err)
 	}
 
 	err = yaml.Unmarshal(configYml, m)
 	if err != nil {
-		log.Fatalf("Can't parse config.yml: %v", err)
+		log.Fatalf("can't parse config.yml: %v", err)
 	}
+}
+
+func main() {
+	mainConfig.parse()
+	fmt.Println(mainConfig.ServiceName)
 }

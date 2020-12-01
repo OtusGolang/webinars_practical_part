@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/caarlos0/env"
@@ -13,7 +14,7 @@ type config struct {
 	IsProduction bool          `env:"PRODUCTION,required"`
 	Hosts        []string      `env:"HOSTS" envSeparator:":"`
 	Duration     time.Duration `env:"DURATION"`
-	TempFolder   string        `env:"TEMP_FOLDER" envDefault:"${HOME}/tmp"`
+	TempFolder   string        `env:"TEMP_FOLDER" envExpand:"true"`
 }
 
 /*
@@ -23,7 +24,7 @@ PRODUCTION=true HOSTS="host1:host2:host3" DURATION=1s go run ./src/caarlos-env
 func main() {
 	cfg := config{}
 	if err := env.Parse(&cfg); err != nil {
-		fmt.Printf("%+v\n", err)
+		log.Println(err)
 		return
 	}
 
