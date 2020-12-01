@@ -13,7 +13,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	c, err := config.Read("/tmp/psql_example/configs/local.toml")
+	c, err := config.Read("configs/local.toml")
 	if err != nil {
 		log.Fatal(err)
 	}

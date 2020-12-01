@@ -8,7 +8,7 @@ docker run -d \
     postgres
 
 # Заходим в CLI
-docker exec pg psql -Upostgres -dpostgres
+docker exec -it pg psql -Upostgres -dpostgres
 
 # Создаем себе пользователя и БД
 postgres=# create database books;
