@@ -22,11 +22,11 @@ func ConcatString(m map[string]struct{}) string {
 
 func BenchmarkConcatString(b *testing.B) {
 	m := map[string]struct{}{
-		"1": struct{}{},
-		"2": struct{}{},
-		"3": struct{}{},
-		"4": struct{}{},
-		"5": struct{}{},
+		"1": {},
+		"2": {},
+		"3": {},
+		"4": {},
+		"5": {},
 	}
 
 	for i := 0; i < b.N; i++ {
