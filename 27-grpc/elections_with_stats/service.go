@@ -1,24 +1,32 @@
 package main
 
 import (
-	context "context"
+	"context"
 	"log"
-	"net"
 	"sync"
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	empty "github.com/golang/protobuf/ptypes/empty"
-	"google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
+	"github.com/golang/protobuf/ptypes/empty"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 const defaultInterval = 5 * time.Second
 
 type Service struct {
-	lock  sync.RWMutex
-	stats map[uint32]uint32
+	UnimplementedElectionsServer
+
+	lock     sync.RWMutex
+	stats    map[uint32]uint32
+	interval time.Duration
+}
+
+func NewService() *Service {
+	return &Service{
+		stats:    make(map[uint32]uint32),
+		interval: defaultInterval,
+	}
 }
 
 func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, error) {
@@ -41,46 +49,31 @@ func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, erro
 func (s *Service) GetStats(req *empty.Empty, srv Elections_GetStatsServer) error {
 	log.Printf("new stats listener")
 
-	stop := false
-	for !stop {
+L:
+	for {
 		select {
-		case <-time.After(defaultInterval):
+		case <-srv.Context().Done():
+			log.Printf("stats listener disconnected")
+			break L
+
+		case <-time.After(s.interval):
 			s.lock.RLock()
-			stats := make(map[uint32]uint32)
+			stats := make(map[uint32]uint32, len(s.stats))
 			for k, v := range s.stats {
 				stats[k] = v
 			}
 			s.lock.RUnlock()
+
 			msg := &Stats{
 				Records: stats,
 				Time:    ptypes.TimestampNow(),
 			}
 			if err := srv.Send(msg); err != nil {
 				log.Printf("unable to send message to stats listener: %v", err)
-				stop = true
+				break L
 			}
-
-		case <-srv.Context().Done():
-			log.Printf("stats listener disconnected")
-			stop = true
 		}
 	}
 
 	return nil
-}
-
-func main() {
-	lsn, err := net.Listen("tcp", "localhost:50051")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	server := grpc.NewServer()
-	service := &Service{stats: make(map[uint32]uint32)}
-	RegisterElectionsServer(server, service)
-
-	log.Printf("Starting server on %s", lsn.Addr().String())
-	if err := server.Serve(lsn); err != nil {
-		log.Fatal(err)
-	}
 }

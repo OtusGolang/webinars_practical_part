@@ -1,20 +1,24 @@
 package main
 
 import (
-	context "context"
+	"context"
 	"log"
 	"net"
 
 	"github.com/golang/protobuf/ptypes"
-	empty "github.com/golang/protobuf/ptypes/empty"
+	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/OtusGolang/webinars_practical_part/27-grpc/elections/pb"
 )
 
-type Service struct{}
+type Service struct {
+	pb.UnimplementedElectionsServer
+}
 
-func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, error) {
+func (s *Service) SubmitVote(ctx context.Context, req *pb.Vote) (*empty.Empty, error) {
 	log.Printf("new vote receive (passport=%s, candidate_id=%d, time=%v)",
 		req.Passport, req.CandidateId, ptypes.TimestampString(req.Time))
 
@@ -34,10 +38,9 @@ func main() {
 	}
 
 	server := grpc.NewServer()
-	service := &Service{}
-	RegisterElectionsServer(server, service)
+	pb.RegisterElectionsServer(server, new(Service))
 
-	log.Printf("Starting server on %s", lsn.Addr().String())
+	log.Printf("starting server on %s", lsn.Addr().String())
 	if err := server.Serve(lsn); err != nil {
 		log.Fatal(err)
 	}

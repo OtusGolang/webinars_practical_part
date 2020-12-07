@@ -1,38 +1,39 @@
 package main
 
 import (
-	context "context"
+	"context"
 	"errors"
 	"log"
-	"net"
 	"sync"
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	empty "github.com/golang/protobuf/ptypes/empty"
-	"google.golang.org/grpc"
+	"github.com/golang/protobuf/ptypes/empty"
 )
 
 const defaultInterval = 5 * time.Second
 
 type Service struct {
-	lock  sync.RWMutex
-	stats map[uint32]uint32
+	UnimplementedElectionsServer
+
+	lock     sync.RWMutex
+	stats    map[uint32]uint32
+	interval time.Duration
 }
 
-func (s *Service) getStats() *Stats {
-	s.lock.RLock()
-	defer s.lock.RUnlock()
+func NewService() *Service {
+	return &Service{
+		stats:    make(map[uint32]uint32),
+		interval: defaultInterval,
+	}
+}
 
-	stats := make(map[uint32]uint32)
-	for k, v := range s.stats {
-		stats[k] = v
+func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, error) {
+	if err := s.submitVote(req); err != nil {
+		return nil, err
 	}
 
-	return &Stats{
-		Records: stats,
-		Time:    ptypes.TimestampNow(),
-	}
+	return &empty.Empty{}, nil
 }
 
 func (s *Service) submitVote(req *Vote) error {
@@ -51,14 +52,6 @@ func (s *Service) submitVote(req *Vote) error {
 	return nil
 }
 
-func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, error) {
-	if err := s.submitVote(req); err != nil {
-		return nil, err
-	}
-
-	return &empty.Empty{}, nil
-}
-
 func (s *Service) Internal(srv Elections_InternalServer) error {
 	log.Printf("new internal listener")
 
@@ -72,23 +65,33 @@ func (s *Service) Internal(srv Elections_InternalServer) error {
 				log.Printf("unable to read message from internal listener: %v", err)
 				return
 			}
-			inChan <- req
+
+			select {
+			case <-srv.Context().Done():
+			case inChan <- req:
+			}
 		}
 	}()
 
 	stop := false
 	for !stop {
 		select {
+		case <-srv.Context().Done():
+			log.Printf("stats listener disconnected")
+			stop = true
+
 		case req, ok := <-inChan:
 			if !ok {
 				log.Printf("read loop for internal listener stopped, disconnect it")
 				stop = true
 				break
 			}
+
 			if _, err := s.SubmitVote(srv.Context(), req); err != nil {
 				log.Printf("unable to submit vote, skip it, error: %v", err)
 				continue
 			}
+
 			msg := &StatsVote{
 				Body: &StatsVote_Vote{
 					Vote: req,
@@ -109,28 +112,23 @@ func (s *Service) Internal(srv Elections_InternalServer) error {
 				log.Printf("unable to send stats to internal listener, disconnect it, error: %v", err)
 				stop = true
 			}
-
-		case <-srv.Context().Done():
-			log.Printf("stats listener disconnected")
-			stop = true
 		}
 	}
 
 	return nil
 }
 
-func main() {
-	lsn, err := net.Listen("tcp", "localhost:50051")
-	if err != nil {
-		log.Fatal(err)
+func (s *Service) getStats() *Stats {
+	s.lock.RLock()
+	defer s.lock.RUnlock()
+
+	stats := make(map[uint32]uint32, len(s.stats))
+	for k, v := range s.stats {
+		stats[k] = v
 	}
 
-	server := grpc.NewServer()
-	service := &Service{stats: make(map[uint32]uint32)}
-	RegisterElectionsServer(server, service)
-
-	log.Printf("Starting server on %s", lsn.Addr().String())
-	if err := server.Serve(lsn); err != nil {
-		log.Fatal(err)
+	return &Stats{
+		Records: stats,
+		Time:    ptypes.TimestampNow(),
 	}
 }

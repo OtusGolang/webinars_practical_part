@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	context "context"
+	"context"
 	"errors"
 	"log"
 	"os"
@@ -11,40 +11,17 @@ import (
 
 	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc"
+
+	"github.com/OtusGolang/webinars_practical_part/27-grpc/elections/pb"
 )
 
-func getRequest(reader *bufio.Reader) (*Vote, error) {
-	log.Printf("Write <passport> <candidate_id> <note>:")
-	text, err := reader.ReadString('\n')
-	if err != nil {
-		return nil, errors.New("wrong input, try again")
-	}
-
-	parts := strings.Split(text, " ")
-	if len(parts) < 3 {
-		return nil, errors.New("wrong input, try again")
-	}
-	id, err := strconv.Atoi(parts[1])
-	if err != nil {
-		return nil, errors.New("wrong input, try again")
-	}
-
-	return &Vote{
-		Passport:    parts[0],
-		CandidateId: uint32(id),
-		Note:        strings.Join(parts[2:], " "),
-		Time:        ptypes.TimestampNow(),
-	}, nil
-}
-
 func main() {
-	addr := "localhost:50051"
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	client := NewElectionsClient(conn)
+	client := pb.NewElectionsClient(conn)
 
 	reader := bufio.NewReader(os.Stdin)
 	for {
@@ -60,4 +37,28 @@ func main() {
 
 		log.Printf("vote submitted")
 	}
+}
+
+func getRequest(reader *bufio.Reader) (*pb.Vote, error) {
+	log.Printf("write <passport> <candidate_id> <note>:")
+	text, err := reader.ReadString('\n')
+	if err != nil {
+		return nil, errors.New("wrong input, try again")
+	}
+
+	parts := strings.Split(text, " ")
+	if len(parts) < 3 {
+		return nil, errors.New("wrong input, try again")
+	}
+	id, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return nil, errors.New("wrong input, try again")
+	}
+
+	return &pb.Vote{
+		Passport:    parts[0],
+		CandidateId: uint32(id),
+		Note:        strings.Join(parts[2:], " "),
+		Time:        ptypes.TimestampNow(),
+	}, nil
 }
