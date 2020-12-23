@@ -1,3 +1,3 @@
 module github.com/OtusGolang/webinars_practical_part/05-structures
 
-go 1.14
+go 1.15
