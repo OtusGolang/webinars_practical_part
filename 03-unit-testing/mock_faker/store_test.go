@@ -62,25 +62,28 @@ func (s *StoreSuite) TestDuplicate() {
 	s.Require().NotEqual(newID, user1.ID)
 }
 
+var (
+	errAddUser  = errors.New("test add error")
+	errFindUser = errors.New("test find error")
+)
+
 func (s *StoreSuite) TestDuplicateErrAdd() {
 	user1 := s.fakeUser()
 
-	testErr := errors.New("test error")
 	s.mockDB.EXPECT().FindUser(user1.ID).Return(user1, nil)
-	s.mockDB.EXPECT().AddUser(userMatcher{user1}).Return(testErr)
+	s.mockDB.EXPECT().AddUser(userMatcher{user1}).Return(errAddUser)
 	_, err := s.store.Duplicate(user1.ID)
 
-	s.Require().EqualError(err, testErr.Error())
+	s.Require().True(errors.Is(err, errAddUser))
 }
 
 func (s *StoreSuite) TestDuplicateErrFind() {
 	user1 := s.fakeUser()
 
-	testErr := errors.New("test error")
-	s.mockDB.EXPECT().FindUser(user1.ID).Return(user1, testErr)
+	s.mockDB.EXPECT().FindUser(user1.ID).Return(user1, errFindUser)
 	_, err := s.store.Duplicate(user1.ID)
 
-	s.Require().True(errors.Is(err, testErr))
+	s.Require().True(errors.Is(err, errFindUser))
 }
 
 func (*StoreSuite) fakeUser() mock.User {
@@ -91,6 +94,6 @@ func (*StoreSuite) fakeUser() mock.User {
 	}
 }
 
-func TestStoreSuire(t *testing.T) {
+func TestStoreSuite(t *testing.T) {
 	suite.Run(t, new(StoreSuite))
 }
