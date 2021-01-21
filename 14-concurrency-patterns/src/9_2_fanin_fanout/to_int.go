@@ -1,6 +1,6 @@
 package main
 
-func toInt(done <-chan interface{}, valueStream <-chan interface{}) <-chan int {
+func toInt(done <-chan struct{}, valueStream <-chan interface{}) <-chan int {
 	intStream := make(chan int)
 	go func() {
 		defer close(intStream)

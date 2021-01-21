@@ -9,7 +9,7 @@ import (
 func main() {
 	randFn := func() interface{} { return rand.Intn(100000000) }
 
-	done := make(chan interface{})
+	done := make(chan struct{})
 	defer close(done)
 
 	start := time.Now()

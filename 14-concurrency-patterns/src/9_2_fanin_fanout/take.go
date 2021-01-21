@@ -1,6 +1,6 @@
 package main
 
-func take(done <-chan interface{}, valueStream <-chan interface{}, num int) <-chan interface{} {
+func take(done <-chan struct{}, valueStream <-chan interface{}, num int) <-chan interface{} {
 	takeStream := make(chan interface{})
 	go func() {
 		defer close(takeStream)

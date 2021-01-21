@@ -33,5 +33,6 @@ func main() {
 	urls := []string{"https://www.google.com", "https://badhost"}
 	for response := range checkStatus(done, urls...) {
 		fmt.Printf("Response: %v\n", response.Status)
+		_ = response.Body.Close()
 	}
 }

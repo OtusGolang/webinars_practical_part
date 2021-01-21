@@ -1,6 +1,6 @@
 package main
 
-func repeatFn(done <-chan interface{}, fn func() interface{}) <-chan interface{} {
+func repeatFn(done <-chan struct{}, fn func() interface{}) <-chan interface{} {
 	valueStream := make(chan interface{})
 	go func() {
 		defer close(valueStream)

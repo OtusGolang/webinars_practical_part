@@ -6,32 +6,32 @@ import (
 )
 
 func main() {
-	doWork := func(done <-chan struct{}, strings <-chan string) <-chan struct{} {
+	doWork := func(strings <-chan int) <-chan struct{} {
 		terminated := make(chan struct{})
 		go func() {
 			defer func() {
 				fmt.Println("doWork exited.")
 				close(terminated)
 			}()
-			for {
-				select {
-				case s := <-strings:
-					fmt.Println(s)
-				case <-done:
-					return
-				}
+
+			for s := range strings {
+				fmt.Println(s)
 			}
 		}()
 		return terminated
 	}
 
-	done := make(chan struct{})
-	terminated := doWork(done, nil)
+	data := make(chan int)
+	terminated := doWork(data)
 
 	go func() {
-		time.Sleep(1 * time.Second)
+		for i := 0; i < 3; i++ {
+			data <- i
+			time.Sleep(1 * time.Second)
+		}
+
 		fmt.Println("Canceling doWork goroutine...")
-		close(done)
+		close(data)
 	}()
 
 	<-terminated

@@ -2,7 +2,7 @@ package main
 
 import "sync"
 
-func fanIn(done <-chan interface{}, channels ...<-chan interface{}) <-chan interface{} {
+func fanIn(done <-chan struct{}, channels ...<-chan interface{}) <-chan interface{} {
 	var wg sync.WaitGroup
 	multiplexedStream := make(chan interface{})
 	multiplex := func(c <-chan interface{}) {
@@ -16,13 +16,13 @@ func fanIn(done <-chan interface{}, channels ...<-chan interface{}) <-chan inter
 		}
 	}
 
-	// Select from all the channels
+	// Select from all the channels.
 	wg.Add(len(channels))
 	for _, c := range channels {
 		go multiplex(c)
 	}
 
-	// Wait for all the reads to complete
+	// Wait for all the reads to complete.
 	go func() {
 		wg.Wait()
 		close(multiplexedStream)

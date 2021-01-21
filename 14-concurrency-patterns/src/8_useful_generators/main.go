@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	repeatFn := func(done <-chan interface{}, fn func() interface{}) <-chan interface{} {
+	repeatFn := func(done <-chan struct{}, fn func() interface{}) <-chan interface{} {
 		valueStream := make(chan interface{})
 		go func() {
 			defer close(valueStream)
@@ -22,7 +22,7 @@ func main() {
 	}
 
 	/*
-		repeatBy := func(done <-chan interface{}, fn func() interface{}, interval time.Duration) <-chan interface{} {
+		repeatBy := func(done <-chan struct{}, fn func() interface{}, interval time.Duration) <-chan interface{} {
 			valueStream := make(chan interface{})
 			go func() {
 				t := time.NewTicker(interval)
@@ -48,7 +48,7 @@ func main() {
 		}
 	*/
 
-	take := func(done <-chan interface{}, valueStream <-chan interface{}, num int) <-chan interface{} {
+	take := func(done <-chan struct{}, valueStream <-chan interface{}, num int) <-chan interface{} {
 		takeStream := make(chan interface{})
 		go func() {
 			defer close(takeStream)
@@ -56,14 +56,14 @@ func main() {
 				select {
 				case <-done:
 					return
-				case takeStream <- <-valueStream:
+				case takeStream <- <-valueStream: // Нет ли ничего подозрительного? :)
 				}
 			}
 		}()
 		return takeStream
 	}
 
-	done := make(chan interface{})
+	done := make(chan struct{})
 	defer close(done)
 
 	randFn := func() interface{} { return rand.Int() }

@@ -11,7 +11,7 @@ func main() {
 		Response *http.Response
 	}
 
-	checkStatus := func(done <-chan interface{}, urls ...string) <-chan Result {
+	checkStatus := func(done <-chan struct{}, urls ...string) <-chan Result {
 		results := make(chan Result)
 		go func() {
 			defer close(results)
@@ -38,7 +38,7 @@ func main() {
 		return results
 	}
 
-	done := make(chan interface{})
+	done := make(chan struct{})
 	defer close(done)
 
 	urls := []string{"https://www.google.com", "https://badhost"}

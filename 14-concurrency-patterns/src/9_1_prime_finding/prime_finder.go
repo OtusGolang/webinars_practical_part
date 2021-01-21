@@ -1,6 +1,6 @@
 package main
 
-func primeFinder(done <-chan interface{}, intStream <-chan int) <-chan interface{} {
+func primeFinder(done <-chan struct{}, intStream <-chan int) <-chan interface{} {
 	primeStream := make(chan interface{})
 	go func() {
 		defer close(primeStream)
@@ -22,7 +22,7 @@ func primeFinder(done <-chan interface{}, intStream <-chan int) <-chan interface
 	return primeStream
 }
 
-// very slow calculation
+// Very slow calculation.
 func isPrime(v int) bool {
 	for i := 2; i < v-1; i++ {
 		if v%i == 0 {

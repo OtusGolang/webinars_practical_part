@@ -10,16 +10,16 @@ import (
 func main() {
 	randFn := func() interface{} { return rand.Intn(100000000) }
 
-	done := make(chan interface{})
+	done := make(chan struct{})
 	defer close(done)
 
 	start := time.Now()
 
-	// rand -> repeatFn -> toInt 				fanIn -> take ->
-	//						  -> primeFinder ->
-	//						  -> primeFinder ->
-	//						  -> primeFinder ->
-	//						  -> primeFinder ->
+	// rand -> repeatFn -> toInt               fanIn -> take ->
+	//                        -> primeFinder ->
+	//                        -> primeFinder ->
+	//                        -> primeFinder ->
+	//                        -> primeFinder ->
 	randIntStream := toInt(done, repeatFn(done, randFn))
 	numFinders := runtime.NumCPU()
 	fmt.Printf("Spinning up %d prime finders.\n", numFinders)

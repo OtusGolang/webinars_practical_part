@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	doWork := func(strings <-chan string) <-chan interface{} {
-		completed := make(chan interface{})
+	doWork := func(strings <-chan string) <-chan struct{} {
+		completed := make(chan struct{})
 		go func() {
 			defer func() {
 				fmt.Println("doWork exited.")
