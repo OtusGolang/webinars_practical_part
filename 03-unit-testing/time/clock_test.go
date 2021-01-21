@@ -32,6 +32,7 @@ func TestClockSleep(t *testing.T) {
 		close(doneCh)
 	}()
 
+	time.Sleep(100 * time.Millisecond)
 	require.Eventually(t, func() bool {
 		return 1 == atomic.LoadInt64(&i)
 	}, time.Second, 10*time.Millisecond)
@@ -39,6 +40,13 @@ func TestClockSleep(t *testing.T) {
 	mock.Add(time.Nanosecond)
 
 	require.Eventually(t, func() bool {
-		return 2 == atomic.LoadInt64(&i)
+		select {
+		case <-doneCh:
+			return true
+		default:
+			return false
+		}
 	}, time.Second, 10*time.Millisecond)
+
+	require.EqualValues(t, 2, i)
 }

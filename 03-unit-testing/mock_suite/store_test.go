@@ -72,9 +72,9 @@ func (s *StoreSuite) TestDuplicateErr() {
 	s.mockDB.EXPECT().AddUser(gomock.Any()).Return(errAddUser)
 	_, err := s.store.Duplicate(user1.ID)
 
-	s.Require().EqualError(err, errAddUser.Error())
+	s.Require().True(errors.Is(err, errAddUser))
 }
 
-func TestStoreSuire(t *testing.T) {
+func TestStoreSuite(t *testing.T) {
 	suite.Run(t, new(StoreSuite))
 }

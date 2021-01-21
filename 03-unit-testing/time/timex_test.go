@@ -39,7 +39,16 @@ func TestTimexSleep(t *testing.T) {
 		require.Equal(t, time.Nanosecond, sleepCall.Duration)
 
 		sleepCall.WakeUp()
-		<-doneCh
+
+		require.Eventually(t, func() bool {
+			select {
+			case <-doneCh:
+				return true
+			default:
+				return false
+			}
+		}, time.Second, 10*time.Millisecond)
+
 		require.EqualValues(t, 2, i)
 	})
 }
