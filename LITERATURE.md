@@ -8,6 +8,7 @@ https://github.com/avelino/awesome-go
 * http://golang-book.ru/
 * https://gobyexample.com/
 * https://golangs.org/
+* https://github.com/inancgumus/learngo
 
 ### Архитектура / Практики
 * https://go-proverbs.github.io/
