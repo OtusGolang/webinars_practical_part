@@ -15,8 +15,6 @@ func main() {
 	iv := reflect.ValueOf(i)
 	sv := reflect.ValueOf(&s)
 
-	sv.Type()
-
 	fmt.Printf("%T: %v\n", iv, iv)
 	fmt.Printf("%T: %v\n\n", sv, sv)
 }
