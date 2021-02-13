@@ -43,12 +43,34 @@ func (pges *PgEventStorage) SaveEvent(ctx context.Context, event *entities.Event
 	return err
 }
 
-func (pges *PgEventStorage) GetEventById(ctx context.Context, id string) (*entities.Event, error) {
-	// TODO
-	return nil, nil
+func (pges *PgEventStorage) GetEventByID(ctx context.Context, id string) (*entities.Event, error) {
+	var res entities.Event
+
+	query := `
+		SELECT
+			*
+		FROM events
+		WHERE id = $1
+	`
+
+	err := pges.db.GetContext(ctx, &res, query, id)
+
+	return &res, err
 }
 
-func (pges *PgEventStorage) GetEventsByOwnerStartDate(ctx context.Context, owner string, startTime time.Time) []*entities.Event {
-	// TODO
-	return nil
+func (pges *PgEventStorage) GetEventsByOwnerStartDate(ctx context.Context, owner string, startTime time.Time) *[]entities.Event {
+	var res []entities.Event
+
+	query := `
+		SELECT
+			*
+		FROM events
+		WHERE owner = $1 AND start_time = $2
+	`
+
+	if err := pges.db.SelectContext(ctx, &res, query, owner, startTime); err != nil {
+		return nil
+	}
+
+	return &res
 }
