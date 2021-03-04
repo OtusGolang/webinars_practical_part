@@ -20,7 +20,7 @@ func (r *Repo) Connect(ctx context.Context, dsn string) (err error) {
 	if err != nil {
 		return
 	}
-	r.db.Stats()
+
 	return r.db.PingContext(ctx)
 }
 
