@@ -3,6 +3,7 @@ package psql
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
 
@@ -18,7 +19,7 @@ type Repo struct {
 func (r *Repo) Connect(ctx context.Context, dsn string) (err error) {
 	r.db, err = sql.Open("pgx", dsn)
 	if err != nil {
-		return
+		return fmt.Errorf("cannot open pgx driver: %w", err)
 	}
 
 	return r.db.PingContext(ctx)
@@ -33,7 +34,7 @@ func (r *Repo) GetBooks(ctx context.Context) ([]repository.Book, error) {
 		SELECT title, created_at, updated_at, meta FROM books
 	`)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("cannot select: %w", err)
 	}
 	defer rows.Close()
 
@@ -50,7 +51,7 @@ func (r *Repo) GetBooks(ctx context.Context) ([]repository.Book, error) {
 			&updatedAt,
 			&b.Meta,
 		); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("cannot scan: %w", err)
 		}
 
 		if updatedAt.Valid {
