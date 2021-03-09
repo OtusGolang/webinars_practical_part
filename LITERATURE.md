@@ -25,6 +25,7 @@ https://github.com/avelino/awesome-go
 * https://github.com/google/wire
 
 ### Блоги / Телеграм каналы
+* https://t.me/goinpractice
 * https://dave.cheney.net/
 * https://t.me/GolangBeginners
 * https://t.me/gouniverse
