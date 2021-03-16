@@ -64,9 +64,6 @@ func pointers() {
 	xPtr := &x
 	fmt.Printf("%v %T\n", xPtr, xPtr)
 
-	var f func() error
-	defer f()
-
 	var p *int
 	fmt.Printf("%v %T\n", p, p)
 	fmt.Printf("%v %T\n", *p, p)
