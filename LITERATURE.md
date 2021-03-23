@@ -3,6 +3,10 @@
 ### Основная ссылка со списком библиотек
 https://github.com/avelino/awesome-go
 
+### Об экосистеме
+https://blog.jetbrains.com/go/2021/02/03/the-state-of-go/
+https://henvic.dev/posts/go/
+
 ### Туториалы
 * https://tour.golang.org/
 * http://golang-book.ru/
