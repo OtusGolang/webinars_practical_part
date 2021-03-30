@@ -1,16 +1,16 @@
 package main
 
 import (
-	"errors"
 	"fmt"
+
+	"github.com/pkg/errors"
 )
 
 const testEmail = "test@mail.ru"
 
-type UserNotFound struct {
-}
+type UserNotFound struct{}
 
-func (e *UserNotFound) Error() string {
+func (e UserNotFound) Error() string {
 	return "user not found"
 }
 
@@ -19,17 +19,17 @@ func getUserEmail(id int) (string, error) {
 		return testEmail, nil
 	}
 
-	return "", &UserNotFound{}
+	return "", UserNotFound{}
 }
 
 func loginUserById(id int) (bool, error) {
 	email, err := getUserEmail(id)
 	if err != nil {
-		return false, fmt.Errorf("unable to get email: %w", err)
+		return false, errors.Wrap(err, "unable to get email")
 	}
 
 	if email != testEmail {
-		return false, fmt.Errorf("unable to login user")
+		return false, errors.New("unable to login user")
 	}
 
 	return true, nil
@@ -38,12 +38,12 @@ func loginUserById(id int) (bool, error) {
 func main() {
 	_, err := loginUserById(0)
 
-	switch err := errors.Unwrap(err).(type) {
-	case *UserNotFound:
+	switch err := errors.Cause(err).(type) {
+	case UserNotFound:
 		fmt.Println("unable to find user: ", err)
 	case nil:
 		fmt.Println("success")
 	default:
-		fmt.Println("unknown error")
+		fmt.Println("unkown error")
 	}
 }

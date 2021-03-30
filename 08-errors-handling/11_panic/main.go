@@ -9,18 +9,13 @@ func server(workChan <-chan int) {
 }
 
 func safelyDo(work int) {
-	/*defer func() {
-		if err := recover(); err != nil {
-			log.Println("work failed: ", err)
-		}
-	}()*/
-
+	defer fmt.Printf("work %d are done\n", work)
 	do(work)
 }
 
 func do(work int) {
 	fmt.Println("success")
-	//panic("failed")
+	// panic("failed")
 }
 
 func main() {
