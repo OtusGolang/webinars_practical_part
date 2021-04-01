@@ -74,7 +74,7 @@ func (s *StoreSuite) TestDuplicateErrAdd() {
 	s.mockDB.EXPECT().AddUser(userMatcher{user1}).Return(errAddUser)
 	_, err := s.store.Duplicate(user1.ID)
 
-	s.Require().True(errors.Is(err, errAddUser))
+	s.Require().ErrorIs(err, errAddUser)
 }
 
 func (s *StoreSuite) TestDuplicateErrFind() {
@@ -83,7 +83,7 @@ func (s *StoreSuite) TestDuplicateErrFind() {
 	s.mockDB.EXPECT().FindUser(user1.ID).Return(user1, errFindUser)
 	_, err := s.store.Duplicate(user1.ID)
 
-	s.Require().True(errors.Is(err, errFindUser))
+	s.Require().ErrorIs(err, errFindUser)
 }
 
 func (*StoreSuite) fakeUser() mock.User {

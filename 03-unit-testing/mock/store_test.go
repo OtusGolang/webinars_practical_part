@@ -67,5 +67,5 @@ func TestDuplicateErr(t *testing.T) {
 	mockDB.EXPECT().AddUser(gomock.Any()).Return(errAddUser)
 	_, err := store.Duplicate(user1.ID)
 
-	s.Require().True(errors.Is(err, errAddUser))
+	require.ErrorIs(t, err, errAddUser)
 }
