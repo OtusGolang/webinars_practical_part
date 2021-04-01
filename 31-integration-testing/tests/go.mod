@@ -1,6 +1,6 @@
 module godog_example/integration_tests
 
-go 1.14
+go 1.16
 
 require (
 	github.com/cucumber/godog v0.9.0
