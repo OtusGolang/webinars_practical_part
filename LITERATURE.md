@@ -40,6 +40,7 @@ https://henvic.dev/posts/go/
 * https://t.me/golang
 * https://t.me/golang_for_two
 * https://t.me/gogolang
+* https://t.me/golangquiz
 
 ### Базы данных
 #### Реляционные
