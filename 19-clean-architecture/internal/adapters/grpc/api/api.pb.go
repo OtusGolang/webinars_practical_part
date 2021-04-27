@@ -6,18 +6,21 @@ package api
 import (
 	context "context"
 	fmt "fmt"
+	math "math"
+
 	proto "github.com/golang/protobuf/proto"
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ = proto.Marshal
-var _ = fmt.Errorf
-var _ = math.Inf
+var (
+	_ = proto.Marshal
+	_ = fmt.Errorf
+	_ = math.Inf
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -47,15 +50,19 @@ func (*Event) Descriptor() ([]byte, []int) {
 func (m *Event) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Event.Unmarshal(m, b)
 }
+
 func (m *Event) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Event.Marshal(b, m, deterministic)
 }
+
 func (m *Event) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Event.Merge(m, src)
 }
+
 func (m *Event) XXX_Size() int {
 	return xxx_messageInfo_Event.Size(m)
 }
+
 func (m *Event) XXX_DiscardUnknown() {
 	xxx_messageInfo_Event.DiscardUnknown(m)
 }
@@ -124,15 +131,19 @@ func (*CreateEventRequest) Descriptor() ([]byte, []int) {
 func (m *CreateEventRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateEventRequest.Unmarshal(m, b)
 }
+
 func (m *CreateEventRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_CreateEventRequest.Marshal(b, m, deterministic)
 }
+
 func (m *CreateEventRequest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_CreateEventRequest.Merge(m, src)
 }
+
 func (m *CreateEventRequest) XXX_Size() int {
 	return xxx_messageInfo_CreateEventRequest.Size(m)
 }
+
 func (m *CreateEventRequest) XXX_DiscardUnknown() {
 	xxx_messageInfo_CreateEventRequest.DiscardUnknown(m)
 }
@@ -187,15 +198,19 @@ func (*CreateEventResponse) Descriptor() ([]byte, []int) {
 func (m *CreateEventResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CreateEventResponse.Unmarshal(m, b)
 }
+
 func (m *CreateEventResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_CreateEventResponse.Marshal(b, m, deterministic)
 }
+
 func (m *CreateEventResponse) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_CreateEventResponse.Merge(m, src)
 }
+
 func (m *CreateEventResponse) XXX_Size() int {
 	return xxx_messageInfo_CreateEventResponse.Size(m)
 }
+
 func (m *CreateEventResponse) XXX_DiscardUnknown() {
 	xxx_messageInfo_CreateEventResponse.DiscardUnknown(m)
 }
@@ -280,8 +295,10 @@ var fileDescriptor_1b40cafcd4234784 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
+var (
+	_ context.Context
+	_ grpc.ClientConn
+)
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -317,8 +334,7 @@ type CalendarServiceServer interface {
 }
 
 // UnimplementedCalendarServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedCalendarServiceServer struct {
-}
+type UnimplementedCalendarServiceServer struct{}
 
 func (*UnimplementedCalendarServiceServer) CreateEvent(ctx context.Context, req *CreateEventRequest) (*CreateEventResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateEvent not implemented")

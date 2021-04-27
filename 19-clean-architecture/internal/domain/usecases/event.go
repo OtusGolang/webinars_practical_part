@@ -4,17 +4,16 @@ import (
 	"context"
 	"time"
 
+	"github.com/OtusGolang/webinars_practical_part/19-clean-architecture/internal/domain/entities"
+	"github.com/OtusGolang/webinars_practical_part/19-clean-architecture/internal/domain/interfaces"
 	uuid "github.com/satori/go.uuid"
-
-	"github.com/otusteam/go/cleancalendar/internal/domain/entities"
-	"github.com/otusteam/go/cleancalendar/internal/domain/interfaces"
 )
 
-type EventUsecases struct {
+type EventUseCases struct {
 	EventStorage interfaces.EventStorage
 }
 
-func (es *EventUsecases) CreateEvent(ctx context.Context, owner, title, text string, startTime *time.Time, endTime *time.Time) (*entities.Event, error) {
+func (es *EventUseCases) CreateEvent(ctx context.Context, owner, title, text string, startTime *time.Time, endTime *time.Time) (*entities.Event, error) {
 	// TODO: persistence, validation
 	event := &entities.Event{
 		ID:        uuid.NewV4(),
@@ -29,4 +28,12 @@ func (es *EventUsecases) CreateEvent(ctx context.Context, owner, title, text str
 		return nil, err
 	}
 	return event, nil
+}
+
+func (es *EventUseCases) GetEventByID(ctx context.Context, id string) (*entities.Event, error) {
+	panic("implement me")
+}
+
+func (es *EventUseCases) GetEventsByOwnerStartDate(ctx context.Context, owner string, startTime time.Time) ([]entities.Event, error) {
+	panic("implement me")
 }

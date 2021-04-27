@@ -5,11 +5,10 @@ import (
 	"net"
 	"time"
 
+	"github.com/OtusGolang/webinars_practical_part/19-clean-architecture/internal/domain/entities"
+	"github.com/OtusGolang/webinars_practical_part/19-clean-architecture/internal/domain/errors"
 	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc"
-
-	"github.com/otusteam/go/cleancalendar/internal/domain/entities"
-	"github.com/otusteam/go/cleancalendar/internal/domain/errors"
 )
 
 type eventUsecaseInterface interface {

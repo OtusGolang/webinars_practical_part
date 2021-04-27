@@ -4,22 +4,21 @@ import (
 	"context"
 	"time"
 
+	"github.com/OtusGolang/webinars_practical_part/19-clean-architecture/internal/domain/entities"
 	_ "github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
-
-	"github.com/otusteam/go/cleancalendar/internal/domain/entities"
 )
 
-// implements domain.interfaces.EventStorage
 type PgEventStorage struct {
 	db *sqlx.DB
 }
 
 func NewPgEventStorage(dsn string) (*PgEventStorage, error) {
-	db, err := sqlx.Open("pgx", dsn) // *sql.DB
+	db, err := sqlx.Open("pgx", dsn)
 	if err != nil {
 		return nil, err
 	}
+
 	err = db.Ping()
 	if err != nil {
 		return nil, err
@@ -52,13 +51,10 @@ func (pges *PgEventStorage) GetEventByID(ctx context.Context, id string) (*entit
 		FROM events
 		WHERE id = $1
 	`
-
-	err := pges.db.GetContext(ctx, &res, query, id)
-
-	return &res, err
+	return &res, pges.db.GetContext(ctx, &res, query, id)
 }
 
-func (pges *PgEventStorage) GetEventsByOwnerStartDate(ctx context.Context, owner string, startTime time.Time) *[]entities.Event {
+func (pges *PgEventStorage) GetEventsByOwnerStartDate(ctx context.Context, owner string, startTime time.Time) ([]entities.Event, error) {
 	var res []entities.Event
 
 	query := `
@@ -67,10 +63,5 @@ func (pges *PgEventStorage) GetEventsByOwnerStartDate(ctx context.Context, owner
 		FROM events
 		WHERE owner = $1 AND start_time = $2
 	`
-
-	if err := pges.db.SelectContext(ctx, &res, query, owner, startTime); err != nil {
-		return nil
-	}
-
-	return &res
+	return res, pges.db.SelectContext(ctx, &res, query, owner, startTime)
 }

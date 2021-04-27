@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/otusteam/go/cleancalendar/cmd"
 	"log"
+
+	"github.com/OtusGolang/webinars_practical_part/19-clean-architecture/cmd"
 )
 
 func main() {

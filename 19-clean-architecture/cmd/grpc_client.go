@@ -5,19 +5,20 @@ import (
 	"log"
 	"time"
 
+	"github.com/OtusGolang/webinars_practical_part/19-clean-architecture/internal/adapters/grpc/api"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
-
-	"github.com/otusteam/go/cleancalendar/internal/adapters/grpc/api"
 )
 
-var server string
-var title string
-var text string
-var startTime string
-var endTime string
+var (
+	server    string
+	title     string
+	text      string
+	startTime string
+	endTime   string
+)
 
 const tsLayout = "2006-01-02T15:04:05"
 

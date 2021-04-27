@@ -3,11 +3,10 @@ package cmd
 import (
 	"log"
 
+	"github.com/OtusGolang/webinars_practical_part/19-clean-architecture/internal/adapters/grpc/api"
+	"github.com/OtusGolang/webinars_practical_part/19-clean-architecture/internal/adapters/maindb"
+	"github.com/OtusGolang/webinars_practical_part/19-clean-architecture/internal/domain/usecases"
 	"github.com/spf13/cobra"
-
-	"github.com/otusteam/go/cleancalendar/internal/adapters/grpc/api"
-	"github.com/otusteam/go/cleancalendar/internal/adapters/maindb"
-	"github.com/otusteam/go/cleancalendar/internal/domain/usecases"
 )
 
 // TODO: dependency injection, orchestrator
@@ -16,7 +15,7 @@ func construct(dsn string) (*api.CalendarServer, error) {
 	if err != nil {
 		return nil, err
 	}
-	eventService := &usecases.EventUsecases{
+	eventService := &usecases.EventUseCases{
 		EventStorage: eventStorage,
 	}
 	server := &api.CalendarServer{
@@ -25,8 +24,10 @@ func construct(dsn string) (*api.CalendarServer, error) {
 	return server, nil
 }
 
-var addr string
-var dsn string
+var (
+	addr string
+	dsn  string
+)
 
 var GrpcServerCmd = &cobra.Command{
 	Use:   "grpc_server",
