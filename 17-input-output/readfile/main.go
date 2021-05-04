@@ -31,8 +31,8 @@ func open() {
 }
 
 func readPartOf() {
-	const N = 1 << 10
-	buf := make([]byte, N)
+	const n = 1 << 10
+	buf := make([]byte, n)
 
 	file, err := os.Open("/etc/hosts")
 	if err != nil {
@@ -40,7 +40,7 @@ func readPartOf() {
 	}
 
 	var offset int
-	for offset < N {
+	for offset < n {
 		read, err := file.Read(buf[offset:])
 		offset += read
 		if err == io.EOF {
@@ -61,7 +61,7 @@ func readAll() {
 	}
 
 	// 1
-	b1 := make([]byte, 1 << 20)
+	b1 := make([]byte, 1<<20)
 	n, err := io.ReadFull(file, b1)
 	if err == io.ErrUnexpectedEOF {
 		fmt.Println("buffer is larger than file")

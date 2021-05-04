@@ -10,7 +10,7 @@ func main() {
 		panic(err)
 	}
 
-	b := make([]byte, 1 << 20)
+	b := make([]byte, 1<<20)
 	_, err = file.Write(b)
 	if err != nil {
 		panic(err)
