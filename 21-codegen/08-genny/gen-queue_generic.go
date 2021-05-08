@@ -32,6 +32,13 @@ func (q *StringQueue) Len() int {
 	return len(q.items)
 }
 
+func minString(v1, v2 string) string {
+	if v1 > v2 {
+		return v2
+	}
+	return v1
+}
+
 // IntQueue represents a queue of int types.
 type IntQueue struct {
 	items []int
@@ -58,4 +65,11 @@ func (q *IntQueue) Deq() int {
 // Len gets the current number of int items in the queue.
 func (q *IntQueue) Len() int {
 	return len(q.items)
+}
+
+func minInt(v1, v2 int) int {
+	if v1 > v2 {
+		return v2
+	}
+	return v1
 }

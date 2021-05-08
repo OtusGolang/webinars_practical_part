@@ -15,5 +15,5 @@ var _ fmt.Stringer = (*MessageStatus)(nil)
 
 func main() {
 	status := Sent
-	fmt.Printf("Message is %s", status) // Message is Sent
+	fmt.Printf("Message is %s\n", status) // Message is Sent
 }

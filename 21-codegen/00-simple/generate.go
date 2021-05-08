@@ -13,7 +13,8 @@ import "fmt"
 
 func Hello() {
 	fmt.Println("Hello world!")
-}`
+}
+`
 
 func main() {
 	f, err := os.OpenFile("code.go", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)

@@ -1,10 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 
-	"github.com/OtusGolang/webinars_practical_part/21-codegen/easyjson/student"
+	"github.com/OtusGolang/webinars_practical_part/21-codegen/05-easyjson/student"
 )
 
 func main() {
@@ -17,7 +16,9 @@ func main() {
 			"JavaScript": 3,
 		},
 	}
-	data, err := json.Marshal(s)
+
+	//data, err := json.Marshal(s)
+	data, err := s.MarshalJSON()
 	if err != nil {
 		panic(err)
 	}

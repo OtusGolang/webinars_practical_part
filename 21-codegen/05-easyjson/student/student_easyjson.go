@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(in *jlexer.Lexer, out *Student) {
+func easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21Codegen05EasyjsonStudent(in *jlexer.Lexer, out *Student) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -36,7 +36,7 @@ func easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasy
 			continue
 		}
 		switch key {
-		case "FirstName":
+		case "first_name":
 			out.FirstName = string(in.String())
 		case "SecondName":
 			out.SecondName = string(in.String())
@@ -72,12 +72,12 @@ func easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasy
 		in.Consumed()
 	}
 }
-func easyjsonB83d7b77EncodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(out *jwriter.Writer, in Student) {
+func easyjsonB83d7b77EncodeGithubComOtusGolangWebinarsPracticalPart21Codegen05EasyjsonStudent(out *jwriter.Writer, in Student) {
 	out.RawByte('{')
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"FirstName\":"
+		const prefix string = ",\"first_name\":"
 		out.RawString(prefix[1:])
 		out.String(string(in.FirstName))
 	}
@@ -118,23 +118,23 @@ func easyjsonB83d7b77EncodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasy
 // MarshalJSON supports json.Marshaler interface
 func (v Student) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonB83d7b77EncodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(&w, v)
+	easyjsonB83d7b77EncodeGithubComOtusGolangWebinarsPracticalPart21Codegen05EasyjsonStudent(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Student) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonB83d7b77EncodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(w, v)
+	easyjsonB83d7b77EncodeGithubComOtusGolangWebinarsPracticalPart21Codegen05EasyjsonStudent(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Student) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(&r, v)
+	easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21Codegen05EasyjsonStudent(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Student) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21CodegenEasyjsonStudent(l, v)
+	easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21Codegen05EasyjsonStudent(l, v)
 }

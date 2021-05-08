@@ -10,7 +10,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/OtusGolang/webinars_practical_part/21-codegen/mockgen/mocks"
+	"github.com/OtusGolang/webinars_practical_part/21-codegen/07-mockgen/mocks"
 )
 
 func TestGetPage(t *testing.T) {
@@ -21,7 +21,7 @@ func TestGetPage(t *testing.T) {
 		g := mocks.NewMockGetter(ctrl)
 		g.EXPECT().Get("test url 1").Return(nil, errors.New("400"))
 
-		resp, err := GetPage( "test url 1", WithGetter(g))
+		resp, err := GetPage("test url 1", WithGetter(g))
 		require.NotNil(t, err)
 		require.Nil(t, resp)
 	})

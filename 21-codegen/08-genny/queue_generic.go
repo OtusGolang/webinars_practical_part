@@ -33,3 +33,10 @@ func (q *GenericQueue) Deq() Generic {
 func (q *GenericQueue) Len() int {
 	return len(q.items)
 }
+
+func minGeneric(v1, v2 Generic) Generic {
+	if v1 > v2 {
+		return v2
+	}
+	return v1
+}

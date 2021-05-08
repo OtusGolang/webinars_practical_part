@@ -18,7 +18,6 @@ func (*Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "image/png")
 	w.Write(data)
-	w.WriteHeader(http.StatusOK)
 }
 
 func main() {

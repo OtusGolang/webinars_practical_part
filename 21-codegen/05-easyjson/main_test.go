@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/OtusGolang/webinars_practical_part/21-codegen/easyjson/student"
+	"github.com/OtusGolang/webinars_practical_part/21-codegen/05-easyjson/student"
 )
 
 // go test -bench=. -benchmem
