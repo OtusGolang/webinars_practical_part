@@ -7,7 +7,7 @@ import (
 
 func main() {
 	i := 42
-	var s = struct {
+	s := struct {
 		string
 		int
 	}{"hello", 42}
