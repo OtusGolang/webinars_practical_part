@@ -33,10 +33,10 @@ func BenchmarkReuseObject(b *testing.B) {
 // 		},
 // 	}
 // 	buf := []byte("{\"I\": 32}")
-// 	var a *A
 // 	for i := 0; i < b.N; i++ {
-// 		a = p.Get().(*A)
+// 		a := p.Get().(*A)
 // 		json.Unmarshal(buf, a)
+// 		*a = A{}
 // 		p.Put(a)
 // 	}
 // }
