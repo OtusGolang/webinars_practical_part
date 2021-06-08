@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	lsn, err := net.Listen("tcp", "localhost:50051")
+	lsn, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatal(err)
 	}

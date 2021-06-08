@@ -6,6 +6,11 @@ option go_package = "./;main";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
+service Elections {
+  rpc SubmitVote (Vote) returns (google.protobuf.Empty) {}
+  rpc Internal (stream Vote) returns (stream StatsVote) {}
+}
+
 message Vote {
   string passport = 1;
   uint32 candidate_id = 2;
@@ -22,12 +27,5 @@ message StatsVote {
   oneof body {
     Stats stats = 1;
     Vote vote = 2;
-  }
-}
-
-service Elections {
-  rpc SubmitVote (Vote) returns (google.protobuf.Empty) {
-  }
-  rpc Internal (stream Vote) returns (stream StatsVote) {
   }
 }

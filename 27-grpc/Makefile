@@ -13,3 +13,9 @@ generate:
 		--go_out=elections-with-stats \
 		--go-grpc_out=elections-with-stats \
 		api/elections-with-stats/*.proto
+
+evans-stats:
+	evans --proto api/elections-with-stats/elections.proto repl
+
+evans-admin:
+	evans --proto api/elections-with-admin/elections.proto repl
