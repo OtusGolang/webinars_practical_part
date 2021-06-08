@@ -12,6 +12,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // ElectionsClient is the client API for Elections service.
@@ -19,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ElectionsClient interface {
 	SubmitVote(ctx context.Context, in *Vote, opts ...grpc.CallOption) (*empty.Empty, error)
-	GetStats(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (Elections_GetStatsClient, error)
+	Internal(ctx context.Context, opts ...grpc.CallOption) (Elections_InternalClient, error)
 }
 
 type electionsClient struct {
@@ -32,39 +33,38 @@ func NewElectionsClient(cc grpc.ClientConnInterface) ElectionsClient {
 
 func (c *electionsClient) SubmitVote(ctx context.Context, in *Vote, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := c.cc.Invoke(ctx, "/elections_with_stat.Elections/SubmitVote", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/elections_with_admin.Elections/SubmitVote", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *electionsClient) GetStats(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (Elections_GetStatsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Elections_serviceDesc.Streams[0], "/elections_with_stat.Elections/GetStats", opts...)
+func (c *electionsClient) Internal(ctx context.Context, opts ...grpc.CallOption) (Elections_InternalClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Elections_ServiceDesc.Streams[0], "/elections_with_admin.Elections/Internal", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &electionsGetStatsClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
+	x := &electionsInternalClient{stream}
 	return x, nil
 }
 
-type Elections_GetStatsClient interface {
-	Recv() (*Stats, error)
+type Elections_InternalClient interface {
+	Send(*Vote) error
+	Recv() (*StatsVote, error)
 	grpc.ClientStream
 }
 
-type electionsGetStatsClient struct {
+type electionsInternalClient struct {
 	grpc.ClientStream
 }
 
-func (x *electionsGetStatsClient) Recv() (*Stats, error) {
-	m := new(Stats)
+func (x *electionsInternalClient) Send(m *Vote) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *electionsInternalClient) Recv() (*StatsVote, error) {
+	m := new(StatsVote)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (x *electionsGetStatsClient) Recv() (*Stats, error) {
 // for forward compatibility
 type ElectionsServer interface {
 	SubmitVote(context.Context, *Vote) (*empty.Empty, error)
-	GetStats(*empty.Empty, Elections_GetStatsServer) error
+	Internal(Elections_InternalServer) error
 	mustEmbedUnimplementedElectionsServer()
 }
 
@@ -87,8 +87,8 @@ type UnimplementedElectionsServer struct {
 func (UnimplementedElectionsServer) SubmitVote(context.Context, *Vote) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SubmitVote not implemented")
 }
-func (UnimplementedElectionsServer) GetStats(*empty.Empty, Elections_GetStatsServer) error {
-	return status.Errorf(codes.Unimplemented, "method GetStats not implemented")
+func (UnimplementedElectionsServer) Internal(Elections_InternalServer) error {
+	return status.Errorf(codes.Unimplemented, "method Internal not implemented")
 }
 func (UnimplementedElectionsServer) mustEmbedUnimplementedElectionsServer() {}
 
@@ -100,7 +100,7 @@ type UnsafeElectionsServer interface {
 }
 
 func RegisterElectionsServer(s grpc.ServiceRegistrar, srv ElectionsServer) {
-	s.RegisterService(&_Elections_serviceDesc, srv)
+	s.RegisterService(&Elections_ServiceDesc, srv)
 }
 
 func _Elections_SubmitVote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -113,7 +113,7 @@ func _Elections_SubmitVote_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/elections_with_stat.Elections/SubmitVote",
+		FullMethod: "/elections_with_admin.Elections/SubmitVote",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ElectionsServer).SubmitVote(ctx, req.(*Vote))
@@ -121,29 +121,37 @@ func _Elections_SubmitVote_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Elections_GetStats_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(empty.Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ElectionsServer).GetStats(m, &electionsGetStatsServer{stream})
+func _Elections_Internal_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ElectionsServer).Internal(&electionsInternalServer{stream})
 }
 
-type Elections_GetStatsServer interface {
-	Send(*Stats) error
+type Elections_InternalServer interface {
+	Send(*StatsVote) error
+	Recv() (*Vote, error)
 	grpc.ServerStream
 }
 
-type electionsGetStatsServer struct {
+type electionsInternalServer struct {
 	grpc.ServerStream
 }
 
-func (x *electionsGetStatsServer) Send(m *Stats) error {
+func (x *electionsInternalServer) Send(m *StatsVote) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-var _Elections_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "elections_with_stat.Elections",
+func (x *electionsInternalServer) Recv() (*Vote, error) {
+	m := new(Vote)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// Elections_ServiceDesc is the grpc.ServiceDesc for Elections service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Elections_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "elections_with_admin.Elections",
 	HandlerType: (*ElectionsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -153,9 +161,10 @@ var _Elections_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "GetStats",
-			Handler:       _Elections_GetStats_Handler,
+			StreamName:    "Internal",
+			Handler:       _Elections_Internal_Handler,
 			ServerStreams: true,
+			ClientStreams: true,
 		},
 	},
 	Metadata: "elections.proto",
