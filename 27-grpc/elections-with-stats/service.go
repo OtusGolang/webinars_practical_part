@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const defaultInterval = 5 * time.Second
@@ -31,7 +31,7 @@ func NewService() *Service {
 
 func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, error) {
 	log.Printf("new vote receive (passport=%s, candidate_id=%d, time=%v)",
-		req.Passport, req.CandidateId, ptypes.TimestampString(req.Time))
+		req.Passport, req.CandidateId, req.Time.AsTime())
 
 	if req.Passport == "" || req.CandidateId == 0 {
 		log.Printf("invalid arguments, skip vote")
@@ -66,7 +66,7 @@ L:
 
 			msg := &Stats{
 				Records: stats,
-				Time:    ptypes.TimestampNow(),
+				Time:    timestamppb.Now(),
 			}
 			if err := srv.Send(msg); err != nil {
 				log.Printf("unable to send message to stats listener: %v", err)

@@ -38,7 +38,7 @@ func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, erro
 
 func (s *Service) submitVote(req *Vote) error {
 	log.Printf("new vote receive (passport=%s, candidate_id=%d, time=%v)",
-		req.Passport, req.CandidateId, ptypes.TimestampString(req.Time))
+		req.Passport, req.CandidateId, req.Time.AsTime())
 
 	if req.Passport == "" || req.CandidateId == 0 {
 		return errors.New("invalid arguments, skip vote")

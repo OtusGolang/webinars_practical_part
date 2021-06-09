@@ -4,7 +4,6 @@ package pb
 
 import (
 	context "context"
-	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ElectionsClient interface {
-	SubmitVote(ctx context.Context, in *Vote, opts ...grpc.CallOption) (*empty.Empty, error)
+	SubmitVote(ctx context.Context, in *SubmitVoteRequest, opts ...grpc.CallOption) (*SubmitVoteResponse, error)
 }
 
 type electionsClient struct {
@@ -30,8 +29,8 @@ func NewElectionsClient(cc grpc.ClientConnInterface) ElectionsClient {
 	return &electionsClient{cc}
 }
 
-func (c *electionsClient) SubmitVote(ctx context.Context, in *Vote, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
+func (c *electionsClient) SubmitVote(ctx context.Context, in *SubmitVoteRequest, opts ...grpc.CallOption) (*SubmitVoteResponse, error) {
+	out := new(SubmitVoteResponse)
 	err := c.cc.Invoke(ctx, "/elections.Elections/SubmitVote", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -43,7 +42,7 @@ func (c *electionsClient) SubmitVote(ctx context.Context, in *Vote, opts ...grpc
 // All implementations must embed UnimplementedElectionsServer
 // for forward compatibility
 type ElectionsServer interface {
-	SubmitVote(context.Context, *Vote) (*empty.Empty, error)
+	SubmitVote(context.Context, *SubmitVoteRequest) (*SubmitVoteResponse, error)
 	mustEmbedUnimplementedElectionsServer()
 }
 
@@ -51,7 +50,7 @@ type ElectionsServer interface {
 type UnimplementedElectionsServer struct {
 }
 
-func (UnimplementedElectionsServer) SubmitVote(context.Context, *Vote) (*empty.Empty, error) {
+func (UnimplementedElectionsServer) SubmitVote(context.Context, *SubmitVoteRequest) (*SubmitVoteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SubmitVote not implemented")
 }
 func (UnimplementedElectionsServer) mustEmbedUnimplementedElectionsServer() {}
@@ -68,7 +67,7 @@ func RegisterElectionsServer(s grpc.ServiceRegistrar, srv ElectionsServer) {
 }
 
 func _Elections_SubmitVote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Vote)
+	in := new(SubmitVoteRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -80,7 +79,7 @@ func _Elections_SubmitVote_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/elections.Elections/SubmitVote",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ElectionsServer).SubmitVote(ctx, req.(*Vote))
+		return srv.(ElectionsServer).SubmitVote(ctx, req.(*SubmitVoteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
