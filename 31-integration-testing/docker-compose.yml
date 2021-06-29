@@ -8,7 +8,7 @@ networks:
 
 services:
   registration_service:
-    build: cmd/registration_service
+    build: cmd/registration-service
     depends_on:
       - postgres
       - notification_service
@@ -26,7 +26,7 @@ services:
       - db
 
   notification_service:
-    build: cmd/notification_service
+    build: cmd/notification-service
     depends_on:
       - rabbit
     restart: on-failure
