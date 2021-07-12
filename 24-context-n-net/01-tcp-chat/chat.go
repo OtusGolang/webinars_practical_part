@@ -45,6 +45,6 @@ func main() {
 			log.Fatalf("Cannot accept: %v", err)
 		}
 
-		handleConnection(conn)
+		go handleConnection(conn)
 	}
 }
