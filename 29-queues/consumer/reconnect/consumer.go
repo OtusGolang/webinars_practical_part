@@ -8,10 +8,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/cenkalti/backoff/v3"
 	"log"
 	"time"
 
+	"github.com/cenkalti/backoff/v3"
 	"github.com/streadway/amqp"
 )
 
@@ -114,7 +114,6 @@ func (c *Consumer) announceQueue() (<-chan amqp.Delivery, error) {
 		false,
 		nil,
 	)
-
 	if err != nil {
 		return nil, fmt.Errorf("queue Declare: %s", err)
 	}

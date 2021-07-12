@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 )
 
 func main() {
-	tmpfile, err := ioutil.TempFile("/tmp", "example.")
+	tmpfile, err := os.CreateTemp("/tmp", "example.")
 	if err != nil {
 		log.Fatal(err)
 	}

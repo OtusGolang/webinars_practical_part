@@ -12,7 +12,6 @@ func main() {
 		"USER=petya",
 		"CITY=Msk",
 	)
-	cmd.Stdout = os.Stdout
 
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)

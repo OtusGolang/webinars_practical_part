@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package elections_with_admin;
+option go_package = "./;main";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service Elections {
+  rpc SubmitVote (Vote) returns (google.protobuf.Empty) {}
+  rpc Internal (stream Vote) returns (stream StatsVote) {}
+}
+
+message Vote {
+  string passport = 1;
+  uint32 candidate_id = 2;
+  string note = 3;
+  google.protobuf.Timestamp time = 4;
+}
+
+message Stats {
+  map<uint32, uint32> records = 1;
+  google.protobuf.Timestamp time = 2;
+}
+
+message StatsVote {
+  oneof body {
+    Stats stats = 1;
+    Vote vote = 2;
+  }
+}

@@ -7,17 +7,14 @@ services:
       - 9092:9092 # REST
 
   grafana:
-    image: grafana/grafana
-    volumes:
-      - /tmp/grafana:/var/lib/grafana
-      - /tmp/grafana/provisioning/:/etc/grafana/provisioning/
+    image: grafana/grafana:8.0.3
     depends_on:
       - prometheus
     ports:
       - 3000:3000
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.28.0
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yml
     command:
@@ -28,7 +25,7 @@ services:
       - node-exporter
 
   node-exporter:
-    image: prom/node-exporter
+    image: prom/node-exporter:v1.1.2
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro

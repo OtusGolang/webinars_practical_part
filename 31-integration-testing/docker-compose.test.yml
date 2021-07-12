@@ -19,7 +19,7 @@ services:
       - rabbit
 
   reg_service:
-    build: cmd/registration_service
+    build: cmd/registration-service
     depends_on:
       - postgres
       - rabbit
@@ -35,7 +35,7 @@ services:
       - db
 
   notify_service:
-    build: cmd/notification_service
+    build: cmd/notification-service
     depends_on:
       - rabbit
     restart: on-failure

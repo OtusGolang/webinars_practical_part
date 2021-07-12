@@ -1,4 +1,4 @@
-package main
+package scripts
 
 import (
 	"bytes"
@@ -165,7 +165,7 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^The response code should be (\d+)$`, test.theResponseCodeShouldBe)
 	s.Step(`^The response should match text "([^"]*)"$`, test.theResponseShouldMatchText)
 
-	s.Step(`^I send "([^"]*)" request to "([^"]*)" with "([^"]*)" data:$`, test.iSendRequestToWithData)
+	s.Step(`^I send "([^"]*)"  request to "([^"]*)" with "([^"]*)" data:$`, test.iSendRequestToWithData)
 	s.Step(`^I receive event with text "([^"]*)"$`, test.iReceiveEventWithText)
 
 	s.AfterScenario(test.stopConsuming)

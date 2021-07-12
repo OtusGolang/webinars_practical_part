@@ -1,6 +1,6 @@
 module github.com/OtusGolang/webinars_practical_part/21-codegen
 
-go 1.14
+go 1.16
 
 require (
 	github.com/cheekybits/genny v1.0.0
