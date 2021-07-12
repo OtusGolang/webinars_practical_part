@@ -10,10 +10,10 @@ import (
 )
 
 func main() {
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	ctx1, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
+	ctx, cancel := context.WithTimeout(ctx1, time.Second*2)
 	defer cancel()
 
 	cmd := exec.CommandContext(ctx, "sleep", "10")

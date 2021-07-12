@@ -13,6 +13,7 @@ import (
 
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	//ctx, stop := context.WithCancel(context.Background())
 	defer stop()
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
