@@ -53,7 +53,7 @@ OUTER:
 	log.Printf("Finished writeRoutine")
 }
 
-func stdoutScan() chan string {
+func stdinScan() chan string {
 	out := make(chan string)
 	go func() {
 		scanner := bufio.NewScanner(os.Stdin)
@@ -78,7 +78,7 @@ func main() {
 		log.Fatalf("Cannot connect: %v", err)
 	}
 
-	stdin := stdoutScan()
+	stdin := stdinScan()
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
