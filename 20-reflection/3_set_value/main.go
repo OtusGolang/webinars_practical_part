@@ -19,9 +19,4 @@ func main() {
 
 	v.SetFloat(7.1)
 	fmt.Println(x)
-
-	y := 5.2
-	yPtr := &y
-	pyPtr := reflect.ValueOf(&yPtr)
-	fmt.Println(pyPtr.Type(), ":", pyPtr.CanSet()) // ?
 }

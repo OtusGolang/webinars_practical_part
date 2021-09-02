@@ -29,7 +29,7 @@ func mapToStruct(mp map[string]interface{}, iv interface{}) error {
 		if val, ok := mp[field.Name]; ok {
 			mfv := reflect.ValueOf(val)
 			if mfv.Kind() != fv.Kind() {
-				return fmt.Errorf("incompatible type %T for %q (%T)", mfv, field.Name, fv)
+				return fmt.Errorf("incompatible type %T for %q (%s)", val, field.Name, fv.Type())
 			}
 			if fv.CanSet() {
 				fv.Set(mfv)
