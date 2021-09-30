@@ -27,4 +27,3 @@ func main() {
 	}
 }
 
-//go:generate go-bindata -o static_generated.go ./static

@@ -15,8 +15,6 @@ const (
 	Paracetamol
 )
 
-//var _ json.Marshaler = (*Pill)(nil)
-
 func main() {
 	p, err := json.Marshal(Aspirin)
 	if err != nil {
