@@ -12,6 +12,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // ElectionsClient is the client API for Elections service.
@@ -40,7 +41,7 @@ func (c *electionsClient) SubmitVote(ctx context.Context, in *Vote, opts ...grpc
 }
 
 func (c *electionsClient) GetStats(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (Elections_GetStatsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Elections_serviceDesc.Streams[0], "/elections_with_stat.Elections/GetStats", opts...)
+	stream, err := c.cc.NewStream(ctx, &Elections_ServiceDesc.Streams[0], "/elections_with_stat.Elections/GetStats", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +101,7 @@ type UnsafeElectionsServer interface {
 }
 
 func RegisterElectionsServer(s grpc.ServiceRegistrar, srv ElectionsServer) {
-	s.RegisterService(&_Elections_serviceDesc, srv)
+	s.RegisterService(&Elections_ServiceDesc, srv)
 }
 
 func _Elections_SubmitVote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -142,7 +143,10 @@ func (x *electionsGetStatsServer) Send(m *Stats) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-var _Elections_serviceDesc = grpc.ServiceDesc{
+// Elections_ServiceDesc is the grpc.ServiceDesc for Elections service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Elections_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "elections_with_stat.Elections",
 	HandlerType: (*ElectionsServer)(nil),
 	Methods: []grpc.MethodDesc{

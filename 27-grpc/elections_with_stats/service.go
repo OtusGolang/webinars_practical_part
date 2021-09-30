@@ -72,6 +72,7 @@ L:
 				log.Printf("unable to send message to stats listener: %v", err)
 				break L
 			}
+
 		}
 	}
 

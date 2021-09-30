@@ -13,7 +13,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	server := grpc.NewServer()
+	server := grpc.NewServer(
+		grpc.ChainStreamInterceptor(
+			StreamServerRequestValidatorInterceptor(ValidateReq),
+		),
+		)
 	RegisterElectionsServer(server, NewService())
 
 	log.Printf("starting server on %s", lsn.Addr().String())

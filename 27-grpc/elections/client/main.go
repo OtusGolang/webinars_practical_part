@@ -4,16 +4,32 @@ import (
 	"bufio"
 	"context"
 	"errors"
+	"fmt"
+	"google.golang.org/grpc/metadata"
 	"log"
 	"os"
 	"strconv"
 	"strings"
+	"sync/atomic"
+	"time"
 
 	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc"
 
 	"github.com/OtusGolang/webinars_practical_part/27-grpc/elections/pb"
 )
+
+var lastID uint64
+
+func GetNextID() uint64 {
+	curId := atomic.AddUint64(&lastID, 1)
+	return curId
+}
+
+func GenerateActionId() string {
+	curId := GetNextID()
+	return fmt.Sprintf("%v:%v", time.Now().UTC().Format("20060102150405"), curId)
+}
 
 func main() {
 	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
@@ -31,7 +47,10 @@ func main() {
 			continue
 		}
 
-		if _, err := client.SubmitVote(context.Background(), req); err != nil {
+		md := metadata.New(nil)
+		md.Append("request_id", GenerateActionId())
+		ctx := metadata.NewOutgoingContext(context.Background(), md)
+		if _, err := client.SubmitVote(ctx, req); err != nil {
 			log.Fatal(err)
 		}
 
