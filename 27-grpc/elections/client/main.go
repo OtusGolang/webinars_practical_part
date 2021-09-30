@@ -13,10 +13,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/golang/protobuf/ptypes"
-	"google.golang.org/grpc"
-
 	"github.com/OtusGolang/webinars_practical_part/27-grpc/elections/pb"
+	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var lastID uint64
@@ -32,7 +31,7 @@ func GenerateActionId() string {
 }
 
 func main() {
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err := grpc.Dial(":50051", grpc.WithInsecure())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +57,7 @@ func main() {
 	}
 }
 
-func getRequest(reader *bufio.Reader) (*pb.Vote, error) {
+func getRequest(reader *bufio.Reader) (*pb.SubmitVoteRequest, error) {
 	log.Printf("write <passport> <candidate_id> <note>:")
 	text, err := reader.ReadString('\n')
 	if err != nil {
@@ -74,10 +73,12 @@ func getRequest(reader *bufio.Reader) (*pb.Vote, error) {
 		return nil, errors.New("wrong input, try again")
 	}
 
-	return &pb.Vote{
-		Passport:    parts[0],
-		CandidateId: uint32(id),
-		Note:        strings.Join(parts[2:], " "),
-		Time:        ptypes.TimestampNow(),
+	return &pb.SubmitVoteRequest{
+		Vote: &pb.SubmitVoteRequest_Vote{
+			Passport:    parts[0],
+			CandidateId: uint32(id),
+			Note:        strings.Join(parts[2:], " "),
+			Time:        timestamppb.Now(),
+		},
 	}, nil
 }

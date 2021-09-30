@@ -7,9 +7,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/streadway/amqp"
 	"log"
 	"time"
+
+	"github.com/streadway/amqp"
 )
 
 var (

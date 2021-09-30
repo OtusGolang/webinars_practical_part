@@ -3,8 +3,9 @@ package simpleconsumer
 import (
 	"context"
 	"fmt"
-	"github.com/streadway/amqp"
 	"log"
+
+	"github.com/streadway/amqp"
 )
 
 type RMQConnection interface {
@@ -49,6 +50,11 @@ func (c *Consumer) Consume(ctx context.Context, queue string) (<-chan Message, e
 	}
 
 	go func() {
+		defer func() {
+			close(messages)
+			log.Println("close messages channel")
+		}()
+
 		for {
 			select {
 			case <-ctx.Done():
@@ -74,4 +80,3 @@ func (c *Consumer) Consume(ctx context.Context, queue string) (<-chan Message, e
 
 	return messages, nil
 }
-

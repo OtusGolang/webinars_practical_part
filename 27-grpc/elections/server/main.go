@@ -2,22 +2,22 @@ package main
 
 import (
 	"context"
-	"github.com/OtusGolang/webinars_practical_part/27-grpc/elections"
+	"github.com/OtusGolang/webinars_practical_part/27-grpc/elections/validate"
 	"google.golang.org/grpc/metadata"
 	"log"
 	"net"
 
 	"github.com/OtusGolang/webinars_practical_part/27-grpc/elections/pb"
-	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Service struct {
 	pb.UnimplementedElectionsServer
 }
 
-func (s *Service) SubmitVote(ctx context.Context, req *pb.Vote) (*empty.Empty, error) {
+func (s *Service) SubmitVote(ctx context.Context, req *pb.SubmitVoteRequest) (*pb.SubmitVoteResponse, error) {
 	requestId := ""
 	if ctx != nil {
 		md, ok := metadata.FromIncomingContext(ctx)
@@ -27,28 +27,28 @@ func (s *Service) SubmitVote(ctx context.Context, req *pb.Vote) (*empty.Empty, e
 				requestId = ids[0]
 			}
 		}
+	vote := req.Vote
+	if vote == nil {
+		return nil, status.Error(codes.InvalidArgument, "vote is not specified")
+	}
+
 	}
 	log.Printf("new vote receive (passport=%s, candidate_id=%d, time=%v, request_id: %v)",
-		req.Passport, req.CandidateId, ptypes.TimestampString(req.Time), requestId)
-
-	//if req.Passport == "" || req.CandidateId == 0 {
-	//	log.Printf("invalid arguments, skip vote")
-	//	return nil, status.Error(codes.InvalidArgument, "passport or candidate_id wrong")
-	//}
+		req.Vote.Passport, req.Vote.CandidateId, req.Vote.Time.AsTime(), requestId)
 
 	log.Printf("vote accepted")
-	return &empty.Empty{}, nil
+	return &pb.SubmitVoteResponse{}, nil
 }
 
 func main() {
-	lsn, err := net.Listen("tcp", "localhost:50051")
+	lsn, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
-			elections.UnaryServerRequestValidatorInterceptor(elections.ValidateReq),
+			validate.UnaryServerRequestValidatorInterceptor(validate.ValidateReq),
 			),
 		)
 	pb.RegisterElectionsServer(server, new(Service))

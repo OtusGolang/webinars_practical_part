@@ -14,11 +14,11 @@ type config struct {
 	IsProduction bool          `env:"PRODUCTION,required"`
 	Hosts        []string      `env:"HOSTS" envSeparator:":"`
 	Duration     time.Duration `env:"DURATION"`
-	TempFolder   string        `env:"TEMP_FOLDER" envExpand:"true"`
+	TempFolder   string        `env:"TEMP_FOLDER" envDefault:"${HOME}/tmp" envExpand:"true"`
 }
 
 /*
-PRODUCTION=true HOSTS="host1:host2:host3" DURATION=1s go run ./src/caarlos-env
+PRODUCTION=true HOSTS="host1:host2:host3" DURATION=1s go run ./src/2_caarlos-env
 {Home:/your/home Port:3000 IsProduction:true Hosts:[host1 host2 host3] Duration:1s}
 */
 func main() {

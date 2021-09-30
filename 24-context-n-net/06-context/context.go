@@ -24,7 +24,7 @@ func emulateLongOperation(ctx context.Context, id int) {
 
 func main() {
 	wg := sync.WaitGroup{}
-	ctx, _ := context.WithTimeout(context.Background(), 2000*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 2000*time.Millisecond)
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		go func(id int) {
@@ -33,7 +33,7 @@ func main() {
 		}(i)
 	}
 
-	//time.Sleep(time.Second)
-	//cancel()
+	time.Sleep(time.Second)
+	cancel()
 	wg.Wait()
 }

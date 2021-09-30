@@ -11,7 +11,14 @@ import (
 	"github.com/heetch/confita/backend/file"
 )
 
-//serviceName=go-is-go go run ./src/confita
+type Config struct {
+	ServiceName string        `config:"serviceName"`
+	Port        uint32        `config:"port"`
+	Timeout     time.Duration `config:"timeout"`
+	Directory   string        `json:"directory"`
+}
+
+//serviceName=go-is-go go run ./src/3_confita
 func main() {
 	cfg := Config{
 		ServiceName: "ConfitaTest",
@@ -20,7 +27,7 @@ func main() {
 	}
 
 	loader := confita.NewLoader(
-		file.NewBackend("../../config/config.json"),
+		file.NewBackend("./config/config.json"),
 		env.NewBackend(),
 	)
 	err := loader.Load(context.Background(), &cfg)
@@ -29,11 +36,4 @@ func main() {
 	}
 
 	fmt.Printf("%+v\n", cfg)
-}
-
-type Config struct {
-	ServiceName string        `config:"serviceName"`
-	Port        uint32        `config:"port"`
-	Timeout     time.Duration `config:"timeout"`
-	Directory   string        `json:"directory"`
 }

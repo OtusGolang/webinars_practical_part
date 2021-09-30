@@ -1,6 +1,29 @@
 generate:
+	rm -rf elections/pb
 	mkdir -p elections/pb
-	protoc --proto_path=api/elections/ --go_out=elections/pb --go-grpc_out=elections/pb api/elections/*.proto
 
-	protoc --proto_path=api/elections_with_admin/ --go_out=elections_with_admin --go-grpc_out=elections_with_admin api/elections_with_admin/*.proto
-	protoc --proto_path=api/elections_with_stats/ --go_out=elections_with_stats --go-grpc_out=elections_with_stats api/elections_with_stats/*.proto
+	protoc \
+		--proto_path=api/elections/ \
+		--go_out=elections/pb \
+		--go-grpc_out=elections/pb \
+		api/elections/*.proto
+
+	protoc \
+		--proto_path=api/elections-with-admin/ \
+		--go_out=elections-with-admin \
+		--go-grpc_out=elections-with-admin \
+		api/elections-with-admin/*.proto
+	protoc \
+		--proto_path=api/elections-with-stats/ \
+		--go_out=elections-with-stats \
+		--go-grpc_out=elections-with-stats \
+		api/elections-with-stats/*.proto
+
+evans:
+	evans --proto api/elections/elections.proto repl
+
+evans-stats:
+	evans --proto api/elections-with-stats/elections.proto repl
+
+evans-admin:
+	evans --proto api/elections-with-admin/elections.proto repl

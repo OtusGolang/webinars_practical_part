@@ -42,6 +42,9 @@ https://henvic.dev/posts/go/
 * https://t.me/gogolang
 * https://t.me/golangquiz
 
+### Продвинутые курсы
+https://www.golang-courses.ru/
+
 ### Базы данных
 #### Реляционные
 * http://www.vividcortex.com/hubfs/eBooks/The_Ultimate_Guide_To_Building_Database-Driven_Apps_with_Go.pdf

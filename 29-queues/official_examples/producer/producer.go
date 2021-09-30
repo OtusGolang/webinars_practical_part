@@ -32,7 +32,6 @@ func main() {
 }
 
 func publish(amqpURI, exchange, exchangeType, routingKey, body string, reliable bool) error {
-
 	// This function dials, connects, declares, publishes, and tears down,
 	// all in one go. In a real service, you probably want to maintain a
 	// long-lived connection as state, and publish against that.

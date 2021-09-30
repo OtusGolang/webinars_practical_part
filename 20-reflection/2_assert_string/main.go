@@ -19,8 +19,8 @@ func assertString(iv interface{}) (string, bool) {
 func main() {
 	var iv interface{} = "hello"
 	s, ok := assertString(iv)
-	fmt.Println(s, ok)
+	fmt.Printf("%q %v\n", s, ok)
 
 	s2, ok := assertString(42)
-	fmt.Println(s2, ok)
+	fmt.Printf("%q %v\n", s2, ok)
 }

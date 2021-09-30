@@ -16,7 +16,6 @@ func main() {
 
 	log.Infoln(errorCounter)
 
-
 	l := log.WithField("request_id", 23123)
 	l.Info("hello")
 	l.Info("process request")

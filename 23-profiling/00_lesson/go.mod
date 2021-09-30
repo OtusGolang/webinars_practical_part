@@ -1,3 +1,3 @@
-module github.com/smoug25/profiling/lesson
+module otus.ru/benchtest
 
 go 1.16
