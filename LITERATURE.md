@@ -43,7 +43,8 @@ https://henvic.dev/posts/go/
 * https://t.me/golangquiz
 
 ### Продвинутые курсы
-https://www.golang-courses.ru/
+* [Go на практике](https://www.golang-courses.ru/)
+* [Продвинутая работа с ошибками в Go (Golang)](https://stepik.org/z/89381)
 
 ### Базы данных
 #### Реляционные
