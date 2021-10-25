@@ -1,4 +1,4 @@
-FROM golang:1.12.6
+FROM golang:1.16
 
 RUN mkdir -p /opt/integration_tests
 WORKDIR /opt/integration_tests
