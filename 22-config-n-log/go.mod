@@ -3,7 +3,7 @@ module awesomeProject
 go 1.15
 
 require (
-	github.com/caarlos0/env v3.5.0+incompatible
+	github.com/caarlos0/env/v6 v6.7.2 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/heetch/confita v0.9.2
 	github.com/magiconair/properties v1.8.4 // indirect

@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/caarlos0/env"
+   "github.com/caarlos0/env/v6"
 )
 
 type config struct {
@@ -23,6 +23,11 @@ PRODUCTION=true HOSTS="host1:host2:host3" DURATION=1s go run ./src/2_caarlos-env
 */
 func main() {
 	cfg := config{}
+
+	//opts := env.Options{Environment: map[string]string{
+	//	"PRODUCTION": "true",
+	//}}
+
 	if err := env.Parse(&cfg); err != nil {
 		log.Println(err)
 		return

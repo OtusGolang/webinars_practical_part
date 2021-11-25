@@ -12,6 +12,10 @@ type Config struct {
 	Host string
 }
 
+/*
+SHORTENER_HOST=localhost SHORTENER_PORT=7777 go run main.go
+*/
+
 func main() {
 	httpPort, err := strconv.Atoi(os.Getenv("SHORTENER_PORT"))
 	if err != nil {

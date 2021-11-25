@@ -8,11 +8,16 @@ import (
 
 func main() {
 	var log = logrus.New()
+	//log.SetFormatter(&logrus.JSONFormatter{})
+	//log.SetLevel(logrus.DebugLevel)
+
 	log.AddHook(&Hook{})
 
 	log.Infoln(errorCounter)
 
+	log.Debug("Debug")
 	log.Error("Error")
+	log.Warn("Warn")
 
 	log.Infoln(errorCounter)
 
