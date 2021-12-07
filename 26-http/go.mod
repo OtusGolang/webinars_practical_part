@@ -5,7 +5,6 @@ go 1.17
 require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/net v0.0.0-20211206223403-eba003a116a9
 )
 
 require (
