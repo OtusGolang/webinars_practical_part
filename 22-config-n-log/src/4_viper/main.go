@@ -10,20 +10,20 @@ func main() {
 	viper.SetDefault("port", 8080)
 
 	/* 1 */
-	// viper.BindEnv("port", "PORT")
-	// fmt.Println(viper.Get("port"))
+	//viper.BindEnv("port", "PORT")
+	//fmt.Println(viper.Get("port"))
 
 	/* 2 */
-	// viper.SetEnvPrefix("MY_APP")
-	// viper.AutomaticEnv()
-	// port := viper.GetInt("port") // Becomes "MY_APP_PORT"
-	// fmt.Println(port)
+	//viper.SetEnvPrefix("MY_APP")
+	//viper.AutomaticEnv()
+	//port := viper.GetInt("port") // Becomes "MY_APP_PORT"
+	//fmt.Println(port)
 
 	/* 3 */
-	 viper.SetConfigFile("./config/config.json")
-	 if err := viper.ReadInConfig(); err != nil {
-	 	log.Fatalf("failed to read config: %v", err)
-	 }
+	viper.SetConfigFile("./config/config.json")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("failed to read config: %v", err)
+	}
 	// fmt.Println(viper.ConfigFileUsed())
 	// fmt.Println(viper.AllSettings())
 	//
@@ -32,11 +32,12 @@ func main() {
 	// }
 
 	// /* 4 */
-	// replacer := strings.NewReplacer(".", "_")
-	// viper.SetEnvKeyReplacer(replacer)
-	// viper.AutomaticEnv()
-	// port := viper.GetString("amqp.url") // Becomes AMQP_URL
-	// fmt.Println(port)
+	//replacer := strings.NewReplacer(".", "_")
+	//viper.SetEnvKeyReplacer(replacer)
+	//viper.AutomaticEnv()
+	//port := viper.GetString("amqp.url") // Becomes AMQP_URL
+	//fmt.Println(port)
+	//fmt.Println(viper.GetString("hosts.address"))
 
 	// /* 5 */
 	// type config struct {

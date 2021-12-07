@@ -1,4 +1,6 @@
 {
-  "serviceName": "go-is-very-otus",
-  "directory": "${DIRECTORY}"
+  "serviceName": "go-is-very-otus_test",
+  "directory": "${DIRECTORY}",
+  "port": 700,
+  "hosts": {"address":  "test_host"}
 }

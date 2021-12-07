@@ -24,6 +24,9 @@ func main() {
 	l := log.WithField("request_id", 23123)
 	l.Info("hello")
 	l.Info("process request")
+
+	l2 := l.WithField("test", "test")
+	l2.Infof("Test test")
 }
 
 var errorCounter, warningCounter uint64
