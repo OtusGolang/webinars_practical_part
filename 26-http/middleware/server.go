@@ -1,10 +1,14 @@
 package middleware
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"sync/atomic"
 	"time"
 )
+
+var requestCnt int64
 
 type Logger struct {
 	handler http.Handler
@@ -12,8 +16,11 @@ type Logger struct {
 
 func (l *Logger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
-	l.handler.ServeHTTP(w, r)
-	log.Printf("%s %s %v", r.Method, r.URL.Path, time.Since(start))
+	requestId := atomic.AddInt64(&requestCnt, 1)
+	ctx := context.WithValue(r.Context(), "request_id", requestId)
+	rCtx := r.Clone(ctx)
+	l.handler.ServeHTTP(w, rCtx)
+	log.Printf("%s %s %v request_id: %d", r.Method, r.URL.Path, time.Since(start), requestId)
 }
 
 func NewLogger(handlerToWrap http.Handler) *Logger {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"github.com/OtusGolang/webinars_practical_part/26-http/middleware"
 	"github.com/stretchr/testify/require"
 	"io"
 	"net/http"
@@ -11,7 +12,8 @@ import (
 
 func TestMyHandler(t *testing.T) {
 	server := &MyHandler{}
-	ts := httptest.NewServer(server)
+	logger := middleware.NewLogger(server)
+	ts := httptest.NewServer(logger)
 	defer ts.Close()
 
 	cases := []struct {
