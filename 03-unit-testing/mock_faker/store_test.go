@@ -48,7 +48,7 @@ func (s *StoreSuite) SetupTest() {
 }
 
 func (s *StoreSuite) TeardownTest() {
-	s.mockCtl.Finish()
+	// s.mockCtl.Finish()
 }
 
 func (s *StoreSuite) TestDuplicate() {

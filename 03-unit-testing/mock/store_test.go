@@ -29,8 +29,6 @@ func (u userMatcher) String() string {
 
 func TestDuplicate(t *testing.T) {
 	mockCtl := gomock.NewController(t)
-	defer mockCtl.Finish()
-
 	mockDB := NewMockUsersDB(mockCtl)
 	store := mock.NewUserStore(mockDB)
 
@@ -52,8 +50,6 @@ var errAddUser = errors.New("test error")
 
 func TestDuplicateErr(t *testing.T) {
 	mockCtl := gomock.NewController(t)
-	defer mockCtl.Finish()
-
 	mockDB := NewMockUsersDB(mockCtl)
 	store := mock.NewUserStore(mockDB)
 
