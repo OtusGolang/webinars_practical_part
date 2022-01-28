@@ -3,7 +3,7 @@ package golden_test
 import (
 	"bytes"
 	"flag"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"testing"
 	"text/template"
@@ -50,11 +50,11 @@ Josie
 			goldenFileName := filepath.Join("testdata", r.Name+".golden")
 
 			if *update {
-				err := ioutil.WriteFile(goldenFileName, b.Bytes(), 0644)
+				err := os.WriteFile(goldenFileName, b.Bytes(), 0644)
 				require.NoError(t, err)
 			}
 
-			g, err := ioutil.ReadFile(goldenFileName)
+			g, err := os.ReadFile(goldenFileName)
 			require.NoError(t, err)
 
 			require.Equal(t, b.String(), string(g))
