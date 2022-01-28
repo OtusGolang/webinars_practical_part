@@ -31,9 +31,8 @@ func open() {
 }
 
 func readPartOf() {
-	// Вычитываем мегабайт данных с помощью килобайтного буфера.
 	const n = 1 << 10
-	buf := make([]byte, 1024)
+	buf := make([]byte, n)
 
 	file, err := os.Open("/etc/hosts")
 	if err != nil {
