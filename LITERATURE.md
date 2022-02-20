@@ -166,7 +166,7 @@ https://henvic.dev/posts/go/
 ### Плейграунды
 * https://play.golang.org/
 * https://goplay.space/
-* https://goplay.x1unix.com/
+* https://goplay.tools/
 
 ### Роутеры:
 * https://github.com/gorilla/mux
