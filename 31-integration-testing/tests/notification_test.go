@@ -2,6 +2,7 @@ package scripts
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -11,7 +12,7 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
+	"github.com/cucumber/messages-go/v16"
 	"github.com/streadway/amqp"
 )
 
@@ -45,7 +46,7 @@ func panicOnErr(err error) {
 	}
 }
 
-func (test *notifyTest) startConsuming(*messages.Pickle) {
+func (test *notifyTest) startConsuming(ctx context.Context, _ *messages.Pickle) (context.Context, error) {
 	test.messages = make([][]byte, 0)
 	test.messagesMutex = new(sync.RWMutex)
 	test.stopSignal = make(chan struct{})
@@ -80,14 +81,18 @@ func (test *notifyTest) startConsuming(*messages.Pickle) {
 			}
 		}
 	}(test.stopSignal)
+
+	return ctx, nil
 }
 
-func (test *notifyTest) stopConsuming(*messages.Pickle, error) {
+func (test *notifyTest) stopConsuming(ctx context.Context, _ *messages.Pickle, _ error) (context.Context, error) {
 	test.stopSignal <- struct{}{}
 
 	panicOnErr(test.ch.Close())
 	panicOnErr(test.conn.Close())
 	test.messages = nil
+
+	return ctx, nil
 }
 
 func (test *notifyTest) iSendRequestTo(httpMethod, addr string) (err error) {
@@ -122,7 +127,7 @@ func (test *notifyTest) theResponseShouldMatchText(text string) error {
 	return nil
 }
 
-func (test *notifyTest) iSendRequestToWithData(httpMethod, addr, contentType string, data *messages.PickleStepArgument_PickleDocString) (err error) {
+func (test *notifyTest) iSendRequestToWithData(httpMethod, addr, contentType string, data *messages.PickleDocString) (err error) {
 	var r *http.Response
 
 	switch httpMethod {
@@ -156,10 +161,10 @@ func (test *notifyTest) iReceiveEventWithText(text string) error {
 	return fmt.Errorf("event with text '%s' was not found in %s", text, test.messages)
 }
 
-func FeatureContext(s *godog.Suite) {
+func InitializeScenario(s *godog.ScenarioContext) {
 	test := new(notifyTest)
 
-	s.BeforeScenario(test.startConsuming)
+	s.Before(test.startConsuming)
 
 	s.Step(`^I send "([^"]*)" request to "([^"]*)"$`, test.iSendRequestTo)
 	s.Step(`^The response code should be (\d+)$`, test.theResponseCodeShouldBe)
@@ -168,5 +173,5 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^I send "([^"]*)" request to "([^"]*)" with "([^"]*)" data:$`, test.iSendRequestToWithData)
 	s.Step(`^I receive event with text "([^"]*)"$`, test.iReceiveEventWithText)
 
-	s.AfterScenario(test.stopConsuming)
+	s.After(test.stopConsuming)
 }
