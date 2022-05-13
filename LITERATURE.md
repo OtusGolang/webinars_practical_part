@@ -109,6 +109,7 @@ https://henvic.dev/posts/go/
 * https://techrocks.ru/2019/10/29/12-books-for-golang-learning/
 
 ### Конфигурирование
+* https://github.com/knadh/koanf
 * https://github.com/spf13/viper
 * https://github.com/heetch/confita
 
