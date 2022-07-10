@@ -54,7 +54,7 @@ $ docker-compose exec postgres psql -U test -d exampledb -c "select * from users
 (1 row)
 ```
 
-Проверяем, что было опубликовано событие о новой регистрации
+Проверяем, что было опубликовано событие о новой регистрации (логин и пароль guest:guest)
 http://127.0.0.1:15672/#/queues/%2F/ToNotificationService
 <img src="https://github.com/OtusGolang/webinars_practical_part/raw/master/31-integration-testing/assets/user_reg_event.png" width="600">
 
@@ -146,4 +146,4 @@ $ echo $?
 - успешно выполняются 2 тестовых сценария из 6 шагов;
 - контейнеры останавливаются и удаляются;
 - **сам скрипт возвращает 0 и 1 в зависимости от статуса прохождения тестов**
-(это важно, так пригодится нам в Continuous Integration).
+(это важно, так как пригодится в Continuous Integration).
