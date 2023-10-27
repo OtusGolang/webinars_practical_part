@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  clickhouse:
+    image: yandex/clickhouse-server:latest
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+  aerospike:
+    image: aerospike/aerospike-server:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - aerospike_data:/opt/aerospike/data
+
+  lua:
+    image: alpine:latest
+    command: /bin/sh -c "apk add --no-cache lua5.3 && lua5.3"
+    stdin_open: true
+    tty: true
+
+volumes:
+  mongodb_data:
+  redis_data:
+  clickhouse_data:
+  aerospike_data:
