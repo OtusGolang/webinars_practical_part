@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package benchmark;
+option go_package = "benchs/benchmark/proto;proto";
+
+
+message Sint32Message {
+  repeated sint32 value = 1;
+}
+
+message Int32Message {
+  repeated int32 value = 1;
+}
