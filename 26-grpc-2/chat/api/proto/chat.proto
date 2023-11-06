@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package chat;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "chat/api/proto;proto";
+
+service ChatService {
+  rpc Chat(stream Message) returns (stream Message);
+  rpc StartCount(google.protobuf.Empty) returns (stream Message);
+}
+
+message Message {
+  string content = 1;
+}
