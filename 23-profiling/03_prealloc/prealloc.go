@@ -16,3 +16,10 @@ func Slow() {
 	}
 }
 
+func Slow1() {
+	const sz = 32000
+	a := make([]int, sz, sz)
+	for i := 0; i < sz; i++ {
+		a[i] = i
+	}
+}

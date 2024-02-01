@@ -13,3 +13,9 @@ func BenchmarkSlow(b *testing.B) {
 		Slow()
 	}
 }
+
+func BenchmarkSlow1(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Slow1()
+	}
+}
