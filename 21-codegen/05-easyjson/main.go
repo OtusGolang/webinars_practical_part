@@ -6,6 +6,9 @@ import (
 	"github.com/OtusGolang/webinars_practical_part/21-codegen/05-easyjson/student"
 )
 
+// to install easyjson tool:
+// go get github.com/mailru/easyjson && go install github.com/mailru/easyjson/...@latest
+
 func main() {
 	s := student.Student{
 		FirstName:  "Otus",
