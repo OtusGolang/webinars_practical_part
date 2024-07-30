@@ -15,6 +15,11 @@ func main() {
 //go:generate list
 //go:generate go run generate.go
 
+//go:generate echo f=$GOFILE p=$GOPACKAGE r=$GOROOT a=$GOARCH o=$GOOS d=$DOLLAR l=$GOLINE
+// Список: https://pkg.go.dev/cmd/go#hdr-Generate_Go_files_by_processing_source
+
+//go:generate pwd
+
 // go generate
 // go generate -v
 // go generate -x

@@ -16,3 +16,4 @@ func main() {
 	fmt.Printf("Message is %s\n", status) // Message is Sent
 }
 
+// run with: go run main.go messagestatus_string.go
