@@ -1,6 +1,6 @@
 module webinars_practical_part
 
-go 1.19
+go 1.23
 
 require (
 	github.com/ClickHouse/clickhouse-go v1.5.4

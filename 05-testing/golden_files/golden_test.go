@@ -25,7 +25,7 @@ It is a shame you couldn't make it to the wedding.
 Thank you for the lovely {{.}}.
 {{end}}
 Best wishes,
-Josie
+Jessie
 `
 
 	type Recipient struct {
@@ -35,13 +35,12 @@ Josie
 	var recipients = []Recipient{
 		{"Aunt Mildred", "bone china tea set", true},
 		{"Uncle John", "moleskin pants", false},
-		{"Cousin Rodney", "", false},
+		{"Cousin Rodney", "", true},
 	}
 
 	tmpl := template.Must(template.New("letter").Parse(letter))
 
 	for _, r := range recipients {
-		r := r
 		t.Run(r.Name, func(t *testing.T) {
 			b := bytes.NewBuffer(nil)
 			err := tmpl.Execute(b, r)
@@ -57,7 +56,7 @@ Josie
 			g, err := os.ReadFile(goldenFileName)
 			require.NoError(t, err)
 
-			require.Equal(t, b.String(), string(g))
+			require.Equal(t, string(g), b.String())
 		})
 	}
 }
