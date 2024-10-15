@@ -1,9 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func CommonUtil() {
-
 	fmt.Printf("Common Util\n")
 
 	if false {
