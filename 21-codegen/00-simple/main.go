@@ -1,4 +1,5 @@
 //go:generate ./command.sh
+// FOR WINDOWS: //go:generate cmd /C command.win.bat
 
 package main
 
