@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gorilla/websocket"
-	"log"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/gorilla/websocket"
+	"github.com/lmittmann/tint"
 )
 
 func readLoop(c *websocket.Conn) {
@@ -16,11 +17,13 @@ func readLoop(c *websocket.Conn) {
 			c.Close()
 			break
 		}
-		fmt.Printf("%s\n", buff)
+		slog.Info("got datagram", "content", string(buff))
 	}
 }
 
 func main() {
+	slog.SetDefault(slog.New(tint.NewHandler(os.Stdout, nil)))
+
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGTERM)
 
@@ -28,7 +31,8 @@ func main() {
 	wsDialer := websocket.Dialer{}
 	conn, _, err := wsDialer.Dial(url, nil)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error dialing", "err", err)
+		return
 	}
 
 	go readLoop(conn)

@@ -3,13 +3,14 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
 	"io"
-	"log"
+	"log/slog"
 	"net/http"
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 const defaultInterval = 2 * time.Second
@@ -84,23 +85,21 @@ func (s *Service) SubmitVote(w http.ResponseWriter, r *http.Request) {
 
 	// validate field
 	if req.Passport == "" || req.CandidateId == 0 {
-		log.Printf("invalid arguments, skip vote")
+		slog.Warn("invalid arguments, skip vote")
 		resp.Error.Message = "passport or candidate_id wrong"
 		w.WriteHeader(http.StatusBadRequest)
 		WriteResponse(w, resp)
 		return
 	}
 
-	log.Printf("new vote receive (passport=%s, candidate_id=%d, time=%v)",
-		req.Passport, req.CandidateId, req.Time)
+	slog.Info("new vote receive", "passport", req.Passport, "candidate_id", req.CandidateId, "time", req.Time)
 
 	s.Lock()
 	s.Stats[req.CandidateId]++
 	s.Unlock()
 
-	log.Print("vote accepted")
+	slog.Info("vote accepted")
 	w.WriteHeader(http.StatusOK)
-	return
 }
 
 func (s *Service) GetStats(w http.ResponseWriter, r *http.Request) {
@@ -125,7 +124,7 @@ func (s *Service) GetStats(w http.ResponseWriter, r *http.Request) {
 		s.Lock()
 		stat, ok := s.Stats[uint32(candidateId)]
 		s.Unlock()
-		fmt.Println(ok)
+		slog.Info("candidate found", "found", ok)
 		if !ok {
 			resp.Error.Message = fmt.Sprintf("candidate with id %d doasn't found", candidateId)
 			w.WriteHeader(http.StatusBadRequest)
@@ -155,7 +154,6 @@ func (s *Service) GetStats(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	WriteResponse(w, resp)
-	return
 }
 
 // websocket handler
@@ -170,6 +168,9 @@ func (s *Service) StatStream(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) writeLoop(c *websocket.Conn) {
+	defer func() {
+		slog.Info("web socket closed")
+	}()
 	for {
 		s.Lock()
 		r := s.Stats
@@ -187,7 +188,6 @@ func (s *Service) writeLoop(c *websocket.Conn) {
 
 		err = c.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
-			log.Printf("client close web socket")
 			c.Close()
 			break
 		}
@@ -198,12 +198,11 @@ func (s *Service) writeLoop(c *websocket.Conn) {
 func WriteResponse(w http.ResponseWriter, resp *Response) {
 	resBuf, err := json.Marshal(resp)
 	if err != nil {
-		log.Printf("responce marshal error: %s", err)
+		slog.Error("responce marshal error", "err", err)
 	}
 	_, err = w.Write(resBuf)
 	if err != nil {
-		log.Printf("responce marshal error: %s", err)
+		slog.Error("responce marshal error", "err", err)
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	return
 }

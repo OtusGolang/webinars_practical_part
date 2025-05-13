@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"context"
-	"log"
+	"log/slog"
 	"net/http"
 	"sync/atomic"
 	"time"
@@ -20,7 +20,7 @@ func (l *Logger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := context.WithValue(r.Context(), "request_id", requestId)
 	rCtx := r.Clone(ctx)
 	l.handler.ServeHTTP(w, rCtx)
-	log.Printf("%s %s %v request_id: %d", r.Method, r.URL.Path, time.Since(start), requestId)
+	slog.Info("request", "method", r.Method, "url", r.URL.Path, "duration", time.Since(start), "request_id", requestId)
 }
 
 func NewLogger(handlerToWrap http.Handler) *Logger {

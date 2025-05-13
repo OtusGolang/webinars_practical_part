@@ -5,16 +5,21 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/OtusGolang/webinars_practical_part/26-http/handler"
-	"github.com/OtusGolang/webinars_practical_part/26-http/middleware"
 	"io"
-	"log"
+	"log/slog"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
+
+	"github.com/OtusGolang/webinars_practical_part/26-http/handler"
+	"github.com/OtusGolang/webinars_practical_part/26-http/middleware"
+	"github.com/lmittmann/tint"
 )
 
 func main() {
+	slog.SetDefault(slog.New(tint.NewHandler(os.Stdout, nil)))
+
 	var tr http.RoundTripper
 	tr = &http.Transport{
 		MaxIdleConns:    100,
@@ -32,17 +37,30 @@ func main() {
 		CandidateId: 1,
 	}
 
-	jsonBody, _ := json.Marshal(voteReq)
-	reqVote, err := http.NewRequest(http.MethodPost, "http://0.0.0.0:8080/vote",
-		bytes.NewBuffer(jsonBody))
+	jsonBody, err := json.Marshal(voteReq)
+	if err != nil {
+		slog.Error("error marshalling vote request", "err", err)
+		return
+	}
+
+	reqVote, err := http.NewRequest(
+		http.MethodPost,
+		"http://0.0.0.0:8080/vote",
+		bytes.NewBuffer(jsonBody),
+	)
+	if err != nil {
+		slog.Error("error creating request", "err", err)
+		return
+	}
 
 	// respVote, err := http.DefaultClient.Do(reqVote)
 	respVote, err := client.Do(reqVote)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error sending request", "err", err)
+		return
 	}
 
-	fmt.Printf("responce from vote: %+v\n", respVote)
+	slog.Info("responce from vote", "resp", respVote)
 
 	// get stat for candidate with id  1
 	reqArgs := url.Values{}
@@ -59,10 +77,11 @@ func main() {
 	// respStat, err := http.DefaultClient.Do(req)
 	respStat, err := client.Do(reqStat)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("error sending request", "err", err)
+		return
 	}
 
-	fmt.Printf("responce from stat: %+v\n", respStat)
+	slog.Info("responce from stat", "resp", respStat)
 }
 
 type Stat struct {
@@ -87,7 +106,7 @@ func PrepareStat(res *http.Response) (*Stat, error) {
 	var response struct {
 		Data *Stat `json:"data"`
 	}
-	
+
 	if err = json.Unmarshal(body, &response); err != nil {
 		return nil, err
 	}
