@@ -164,6 +164,7 @@ func (s *Service) StatStream(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	slog.Info("web socket connected", "remote_addr", conn.RemoteAddr())
 	go s.writeLoop(conn)
 }
 

@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/OtusGolang/webinars_practical_part/26-http/handler"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/OtusGolang/webinars_practical_part/26-http/handler"
 )
 
 type MyHandler struct {
@@ -49,4 +50,5 @@ func main() {
 
 	log.Print("server start on port 8080")
 	log.Fatal(server.ListenAndServe())
+
 }

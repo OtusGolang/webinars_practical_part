@@ -13,10 +13,21 @@ import (
 // curl -d '{"candidate_id": 1, "passport": "test"}' -X POST 0.0.0.0:8080/vote
 // curl 0.0.0.0:8080/stat
 // curl 0.0.0.0:8080/stat/?candidate_id=1
+
+// powershell:
+//  curl -uri http://localhost:8080/vote -method post -body '{"passport":"a", "candidate_id":123}'
+
 func main() {
 	slog.SetDefault(slog.New(tint.NewHandler(os.Stdout, nil)))
 
 	h := handler.NewService()
+
+	// http.HandleFunc("/vote", h.SubmitVote)
+	// http.HandleFunc("/stat", h.GetStats)
+	// http.HandleFunc("/stat/", middleware.IsArgExists(h.GetStats, "candidate_id"))
+	// http.HandleFunc("/stat-stream", h.StatStream)
+	// //http.Handle("/stat-stream", http.HandlerFunc(h.StatStream))
+	// http.Handle("/stat-stream", middleware.NewLogger(http.HandlerFunc(h.StatStream)))
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/vote", h.SubmitVote)
@@ -24,7 +35,6 @@ func main() {
 	mux.HandleFunc("/stat/", middleware.IsArgExists(h.GetStats, "candidate_id"))
 	// websocket handler
 	mux.HandleFunc("/stat-stream", h.StatStream)
-
 	logger := middleware.NewLogger(mux)
 
 	server := &http.Server{
