@@ -21,13 +21,62 @@ import (
 func TestEmpty(t *testing.T) {
 	const str, minor, want = "", "", ""
 	got := titlecase.TitleCase(str, minor)
-	assert.Equal(t, want, got)
+	assert.Equalf(t, want, got, "got %q, want %q", got, want)
 }
 
 func TestWithoutMinor(t *testing.T) {
-	panic("implement me")
+	const str, minor, want = "the quick fox in the bag", "", "The Quick Fox In The Bag"
+	got := titlecase.TitleCase(str, minor)
+	assert.Equalf(t, want, got, "got %q, want %q", got, want)
+
 }
 
 func TestWithMinorInFirst(t *testing.T) {
-	panic("implement me")
+	const str, minor, want = "the quick fox in the bag", "the", "The Quick Fox In the Bag"
+	got := titlecase.TitleCase(str, minor)
+	assert.Equalf(t, want, got, "got %q, want %q", got, want)
+}
+
+func TestWithSigns(t *testing.T) {
+	t.Parallel()
+	const str, minor, want = "the quick fox, in-the bag", "fox in the", "The Quick fox In the Bag"
+	got := titlecase.TitleCase(str, minor)
+	assert.Equalf(t, want, got, "got %q, want %q", got, want)
+}
+
+func TestTitleCase(t *testing.T) {
+	t.Parallel()
+	tt := []struct {
+		name  string
+		str   string
+		minor string
+		exp   string
+	}{
+		{
+			name:  "empty",
+			str:   "",
+			minor: "",
+			exp:   "",
+		},
+		{
+			name:  "without_minor",
+			str:   "the quick fox in the bag",
+			minor: "",
+			exp:   "The Quick Fox In The Bag",
+		},
+		{
+			name:  "minor_in_first",
+			str:   "the quick fox in the bag",
+			minor: "the",
+			exp:   "The Quick Fox In the Bag",
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			act := titlecase.TitleCase(tc.str, tc.minor)
+			assert.Equalf(t, tc.exp, act, "got %q, want %q", act, tc.exp)
+		})
+	}
 }
