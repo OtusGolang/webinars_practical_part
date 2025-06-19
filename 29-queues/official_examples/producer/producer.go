@@ -1,6 +1,5 @@
 // This example declares a durable Exchange, and publishes a single message to
 // that Exchange with a given routing key.
-//
 package main
 
 import (
@@ -20,11 +19,9 @@ var (
 	reliable     = flag.Bool("reliable", true, "Wait for the publisher confirmation before exiting")
 )
 
-func init() {
-	flag.Parse()
-}
-
 func main() {
+	flag.Parse()
+
 	if err := publish(*uri, *exchangeName, *exchangeType, *routingKey, *body, *reliable); err != nil {
 		log.Fatalf("%s", err)
 	}
@@ -39,14 +36,14 @@ func publish(amqpURI, exchange, exchangeType, routingKey, body string, reliable 
 	log.Printf("dialing %q", amqpURI)
 	connection, err := amqp.Dial(amqpURI)
 	if err != nil {
-		return fmt.Errorf("Dial: %s", err)
+		return fmt.Errorf("dial: %s", err)
 	}
 	defer connection.Close()
 
 	log.Printf("got Connection, getting Channel")
 	channel, err := connection.Channel()
 	if err != nil {
-		return fmt.Errorf("Channel: %s", err)
+		return fmt.Errorf("channel: %s", err)
 	}
 
 	log.Printf("got Channel, declaring %q Exchange (%q)", exchangeType, exchange)
@@ -59,7 +56,7 @@ func publish(amqpURI, exchange, exchangeType, routingKey, body string, reliable 
 		false,        // noWait
 		nil,          // arguments
 	); err != nil {
-		return fmt.Errorf("Exchange Declare: %s", err)
+		return fmt.Errorf("exchange Declare: %s", err)
 	}
 
 	// Reliable publisher confirms require confirm.select support from the
@@ -67,7 +64,7 @@ func publish(amqpURI, exchange, exchangeType, routingKey, body string, reliable 
 	if reliable {
 		log.Printf("enabling publishing confirms.")
 		if err := channel.Confirm(false); err != nil {
-			return fmt.Errorf("Channel could not be put into confirm mode: %s", err)
+			return fmt.Errorf("channel could not be put into confirm mode: %s", err)
 		}
 
 		confirms := channel.NotifyPublish(make(chan amqp.Confirmation, 1))
@@ -91,7 +88,7 @@ func publish(amqpURI, exchange, exchangeType, routingKey, body string, reliable 
 			// a bunch of application/implementation-specific fields
 		},
 	); err != nil {
-		return fmt.Errorf("Exchange Publish: %s", err)
+		return fmt.Errorf("exchange Publish: %s", err)
 	}
 
 	return nil

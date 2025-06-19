@@ -1,7 +1,6 @@
 // This example declares a durable Exchange, an ephemeral (auto-delete) Queue,
 // binds the Queue to the Exchange with a binding key, and consumes every
 // message published to that Exchange with that routing key.
-//
 package main
 
 import (
@@ -23,11 +22,9 @@ var (
 	lifetime     = flag.Duration("lifetime", 5*time.Second, "lifetime of process before shutdown (0s=infinite)")
 )
 
-func init() {
-	flag.Parse()
-}
-
 func main() {
+	flag.Parse()
+
 	c, err := NewConsumer(*uri, *exchange, *exchangeType, *queue, *bindingKey, *consumerTag)
 	if err != nil {
 		log.Fatalf("%s", err)
