@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"log/slog"
+)
 
 func server(workChan <-chan int) {
 	for work := range workChan {
@@ -9,17 +11,19 @@ func server(workChan <-chan int) {
 }
 
 func safelyDo(work int) {
-	/*defer func() {
-		if err := recover(); err != nil {
-			log.Println("work failed: ", err)
-		}
-	}()*/
+	defer func() {
+		slog.Info("work is done", "work", work)
+
+		// if err := recover(); err != nil {
+		// 	slog.Info("work failed: ", "error", err)
+		// }
+	}()
 
 	do(work)
 }
 
 func do(work int) {
-	fmt.Println("success")
+	slog.Info("success", "work", work)
 	// panic("failed")
 }
 

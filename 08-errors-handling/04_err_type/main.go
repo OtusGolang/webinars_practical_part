@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 type PathError struct {
@@ -16,7 +16,7 @@ func (e *PathError) Error() string {
 }
 
 func checkConfig(path string) error {
-	_, err := ioutil.ReadFile(path)
+	_, err := os.ReadFile(path)
 	if err != nil {
 		return &PathError{"open", path, err}
 	}
@@ -27,7 +27,7 @@ func checkConfig(path string) error {
 func main() {
 	err := checkConfig("/etc/apt/sources.list")
 
-	switch err := err.(type) {
+	switch err := err.(type) { // prefer errors.As
 	case *PathError:
 		fmt.Println("path error: ", err)
 	case nil:
