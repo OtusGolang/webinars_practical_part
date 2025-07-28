@@ -26,7 +26,11 @@ func main() {
 	}
 	logConfig.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder // make output with colors!
 
-	logger := zap.Must(logConfig.Build()).Sugar()
+	loggerRaw, err := logConfig.Build()
+	if err != nil {
+		panic(err)
+	}
+	logger := loggerRaw.Sugar()
 
 	logger.Info("Started")
 	logger.Debug("Debug mode enabled")
