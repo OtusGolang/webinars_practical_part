@@ -1,5 +1,5 @@
-// This example declares a durable Exchange, and publishes a single message to
-// that Exchange with a given routing key.
+// Этот пример создает постоянную (durable) точку обмена (Exchange) и публикует одно сообщение
+// в эту точку обмена с заданным ключом маршрутизации (routing key).
 package main
 
 import (
@@ -11,12 +11,11 @@ import (
 	"github.com/streadway/amqp"
 )
 
-// publish_sync_confirm is an example of publishing a message with synchronous confirms.
-// Main disadvadage here is thet we canot publesh more than one message at a time.
+// publish_sync_confirm — пример публикации сообщения с синхронными подтверждениями.
+// Основной недостаток — нельзя публиковать более одного сообщения за раз.
 func publish_sync_confirm(amqpURI, exchange, exchangeType, routingKey, body string, reliable bool) error {
-	// This function dials, connects, declares, publishes, and tears down,
-	// all in one go. In a real service, you probably want to maintain a
-	// long-lived connection as state, and publish against that.
+	// Эта функция выполняет подключение, открывает канал, объявляет Exchange, публикует сообщение и закрывает соединение.
+	// В реальном сервисе обычно поддерживается постоянное соединение и публикация происходит через него.
 
 	slog.Info("dialing", "amqpURI", amqpURI)
 	connection, err := amqp.Dial(amqpURI)
@@ -44,8 +43,7 @@ func publish_sync_confirm(amqpURI, exchange, exchangeType, routingKey, body stri
 		return fmt.Errorf("exchange Declare: %s", err)
 	}
 	confirms := channel.NotifyPublish(make(chan amqp.Confirmation, 1))
-	// Reliable publisher confirms require confirm.select support from the
-	// connection.
+	// Надежные подтверждения публикации требуют поддержки confirm.select от соединения.
 	if reliable {
 		slog.Info("enabling publishing confirms.")
 		if err := channel.Confirm(false); err != nil {
@@ -77,7 +75,7 @@ func publish_sync_confirm(amqpURI, exchange, exchangeType, routingKey, body stri
 		return fmt.Errorf("exchange Publish: %s", err)
 	}
 
-	// After publishing
+	// После публикации
 
 	select {
 	case ret := <-returns:

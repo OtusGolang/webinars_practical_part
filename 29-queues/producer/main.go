@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-// CLI example:
+// Пример использования из командной строки:
 // go run .\... -sync -key none
 
 var (

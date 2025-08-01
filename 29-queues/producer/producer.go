@@ -1,5 +1,5 @@
-// This example declares a durable Exchange, and publishes a single message to
-// that Exchange with a given routing key.
+// Этот пример создает постоянную (durable) точку обмена (Exchange) и публикует одно сообщение
+// в эту точку обмена с заданным ключом маршрутизации (routing key).
 package main
 
 import (
@@ -9,12 +9,11 @@ import (
 	"github.com/streadway/amqp"
 )
 
-// publish is an example of publishing a message to an Exchange.
-// This code is derived from the official example at https://github.com/streadway/amqp/blob/master/_examples/simple-producer/producer.go
+// publish — пример публикации сообщения в Exchange.
+// Этот код основан на официальном примере: https://github.com/streadway/amqp/blob/master/_examples/simple-producer/producer.go
 func publish(amqpURI, exchange, exchangeType, routingKey, body string, reliable bool) error {
-	// This function dials, connects, declares, publishes, and tears down,
-	// all in one go. In a real service, you probably want to maintain a
-	// long-lived connection as state, and publish against that.
+	// Эта функция выполняет подключение, открывает канал, объявляет Exchange, публикует сообщение и закрывает соединение.
+	// В реальном сервисе обычно поддерживается постоянное соединение и публикация происходит через него.
 
 	log.Printf("dialing %q", amqpURI)
 	connection, err := amqp.Dial(amqpURI)
@@ -42,8 +41,7 @@ func publish(amqpURI, exchange, exchangeType, routingKey, body string, reliable 
 		return fmt.Errorf("exchange Declare: %s", err)
 	}
 
-	// Reliable publisher confirms require confirm.select support from the
-	// connection.
+	// Надежные подтверждения публикации требуют поддержки confirm.select от соединения.
 	if reliable {
 		log.Printf("enabling publishing confirms.")
 		if err := channel.Confirm(false); err != nil {
@@ -77,9 +75,8 @@ func publish(amqpURI, exchange, exchangeType, routingKey, body string, reliable 
 	return nil
 }
 
-// One would typically keep a channel of publishings, a sequence number, and a
-// set of unacknowledged sequence numbers and loop until the publishing channel
-// is closed.
+// Обычно поддерживается канал публикаций, счетчик последовательности и множество неподтвержденных номеров,
+// и выполняется цикл до закрытия канала публикаций.
 func confirmOne(confirms <-chan amqp.Confirmation) {
 	log.Printf("waiting for confirmation of one publishing")
 
