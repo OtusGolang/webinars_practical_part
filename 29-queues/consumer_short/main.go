@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	simpleconsumer "github.com/OtusGolang/webinars_practical_part/29-queues/consumer"
+	simpleconsumer "github.com/OtusGolang/webinars_practical_part/29-queues/consumer_short/consumer"
 	"github.com/streadway/amqp"
 )
 
@@ -17,7 +17,7 @@ func init() {
 	flag.Parse()
 }
 
-// http://localhost:15672/ guest:guest
+// RabbitMQ management UI: http://localhost:15672/ guest:guest
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
@@ -27,6 +27,7 @@ func main() {
 
 	c := simpleconsumer.New("simple consumer", conn)
 	msgs, err := c.Consume(ctx, "hello")
+	failOnErr(err)
 
 	log.Println("start consuming...")
 
