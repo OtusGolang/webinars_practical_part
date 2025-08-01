@@ -3,31 +3,14 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 
 	"github.com/streadway/amqp"
 )
 
-var (
-	uri          = flag.String("uri", "amqp://guest:guest@localhost:5672/", "AMQP URI")
-	exchangeName = flag.String("exchange", "test-exchange", "Durable AMQP exchange name")
-	exchangeType = flag.String("exchange-type", "direct", "Exchange type - direct|fanout|topic|x-custom")
-	routingKey   = flag.String("key", "test-key", "AMQP routing key")
-	body         = flag.String("body", "foobar", "Body of message")
-	reliable     = flag.Bool("reliable", true, "Wait for the publisher confirmation before exiting")
-)
-
-func main() {
-	flag.Parse()
-
-	if err := publish(*uri, *exchangeName, *exchangeType, *routingKey, *body, *reliable); err != nil {
-		log.Fatalf("%s", err)
-	}
-	log.Printf("published %dB OK", len(*body))
-}
-
+// publish is an example of publishing a message to an Exchange.
+// This code is derived from the official example at https://github.com/streadway/amqp/blob/master/_examples/simple-producer/producer.go
 func publish(amqpURI, exchange, exchangeType, routingKey, body string, reliable bool) error {
 	// This function dials, connects, declares, publishes, and tears down,
 	// all in one go. In a real service, you probably want to maintain a

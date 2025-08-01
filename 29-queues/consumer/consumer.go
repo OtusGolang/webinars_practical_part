@@ -1,82 +1,167 @@
-package simpleconsumer
+// This example declares a durable Exchange, an ephemeral (auto-delete) Queue,
+// binds the Queue to the Exchange with a binding key, and consumes every
+// message published to that Exchange with that routing key.
+package main
 
 import (
-	"context"
+	"flag"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/streadway/amqp"
 )
 
-type RMQConnection interface {
-	Channel() (*amqp.Channel, error)
+var (
+	uri          = flag.String("uri", "amqp://guest:guest@localhost:5672/", "AMQP URI")
+	exchange     = flag.String("exchange", "test-exchange", "Durable, non-auto-deleted AMQP exchange name")
+	exchangeType = flag.String("exchange-type", "direct", "Exchange type - direct|fanout|topic|x-custom")
+	queue        = flag.String("queue", "test-queue", "Ephemeral AMQP queue name")
+	bindingKey   = flag.String("key", "test-key", "AMQP binding key")
+	consumerTag  = flag.String("consumer-tag", "simple-consumer", "AMQP consumer tag (should not be blank)")
+	lifetime     = flag.Duration("lifetime", 5*time.Second, "lifetime of process before shutdown (0s=infinite)")
+)
+
+func main() {
+	flag.Parse()
+
+	c, err := NewConsumer(*uri, *exchange, *exchangeType, *queue, *bindingKey, *consumerTag)
+	if err != nil {
+		log.Fatalf("%s", err)
+	}
+
+	if *lifetime > 0 {
+		log.Printf("running for %s", *lifetime)
+		time.Sleep(*lifetime)
+	} else {
+		log.Printf("running forever")
+		select {}
+	}
+
+	log.Printf("shutting down")
+
+	if err := c.Shutdown(); err != nil {
+		log.Fatalf("error during shutdown: %s", err)
+	}
 }
 
 type Consumer struct {
-	name string
-	conn RMQConnection
+	conn    *amqp.Connection
+	channel *amqp.Channel
+	tag     string
+	done    chan error
 }
 
-func New(name string, conn RMQConnection) *Consumer {
-	return &Consumer{
-		name: name,
-		conn: conn,
+func NewConsumer(amqpURI, exchange, exchangeType, queueName, key, ctag string) (*Consumer, error) {
+	c := &Consumer{
+		conn:    nil,
+		channel: nil,
+		tag:     ctag,
+		done:    make(chan error),
 	}
-}
 
-type Message struct {
-	Ctx  context.Context
-	Data []byte
-}
+	var err error
 
-func (c *Consumer) Consume(ctx context.Context, queue string) (<-chan Message, error) {
-	messages := make(chan Message)
-
-	ch, err := c.conn.Channel()
+	log.Printf("dialing %q", amqpURI)
+	c.conn, err = amqp.Dial(amqpURI)
 	if err != nil {
-		return nil, fmt.Errorf("open channel: %w", err)
+		return nil, fmt.Errorf("Dial: %s", err)
 	}
 
 	go func() {
-		<-ctx.Done()
-		if err := ch.Close(); err != nil {
-			log.Println(err)
-		}
+		fmt.Printf("closing: %s", <-c.conn.NotifyClose(make(chan *amqp.Error)))
 	}()
 
-	deliveries, err := ch.Consume(queue, c.name, false, false, false, false, nil)
+	log.Printf("got Connection, getting Channel")
+	c.channel, err = c.conn.Channel()
 	if err != nil {
-		return nil, fmt.Errorf("start consuming: %w", err)
+		return nil, fmt.Errorf("Channel: %s", err)
 	}
 
-	go func() {
-		defer func() {
-			close(messages)
-			log.Println("close messages channel")
-		}()
+	log.Printf("got Channel, declaring Exchange (%q)", exchange)
+	if err = c.channel.ExchangeDeclare(
+		exchange,     // name of the exchange
+		exchangeType, // type
+		true,         // durable
+		false,        // delete when complete
+		false,        // internal
+		false,        // noWait
+		nil,          // arguments
+	); err != nil {
+		return nil, fmt.Errorf("Exchange Declare: %s", err)
+	}
 
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case del := <-deliveries:
-				if err := del.Ack(false); err != nil {
-					log.Println(err)
-				}
+	log.Printf("declared Exchange, declaring Queue %q", queueName)
+	queue, err := c.channel.QueueDeclare(
+		queueName, // name of the queue
+		true,      // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // noWait
+		nil,       // arguments
+	)
+	if err != nil {
+		return nil, fmt.Errorf("Queue Declare: %s", err)
+	}
 
-				msg := Message{
-					Ctx:  context.TODO(),
-					Data: del.Body,
-				}
+	log.Printf("declared Queue (%q %d messages, %d consumers), binding to Exchange (key %q)",
+		queue.Name, queue.Messages, queue.Consumers, key)
 
-				select {
-				case <-ctx.Done():
-					return
-				case messages <- msg:
-				}
-			}
-		}
-	}()
+	if err = c.channel.QueueBind(
+		queue.Name, // name of the queue
+		key,        // bindingKey
+		exchange,   // sourceExchange
+		false,      // noWait
+		nil,        // arguments
+	); err != nil {
+		return nil, fmt.Errorf("Queue Bind: %s", err)
+	}
 
-	return messages, nil
+	log.Printf("Queue bound to Exchange, starting Consume (consumer tag %q)", c.tag)
+	deliveries, err := c.channel.Consume(
+		queue.Name, // name
+		c.tag,      // consumerTag,
+		false,      // noAck
+		false,      // exclusive
+		false,      // noLocal
+		false,      // noWait
+		nil,        // arguments
+	)
+	if err != nil {
+		return nil, fmt.Errorf("Queue Consume: %s", err)
+	}
+
+	go handle(deliveries, c.done)
+
+	return c, nil
+}
+
+func (c *Consumer) Shutdown() error {
+	// will close() the deliveries channel
+	if err := c.channel.Cancel(c.tag, true); err != nil {
+		return fmt.Errorf("Consumer cancel failed: %s", err)
+	}
+
+	if err := c.conn.Close(); err != nil {
+		return fmt.Errorf("AMQP connection close error: %s", err)
+	}
+
+	defer log.Printf("AMQP shutdown OK")
+
+	// wait for handle() to exit
+	return <-c.done
+}
+
+func handle(deliveries <-chan amqp.Delivery, done chan error) {
+	for d := range deliveries {
+		log.Printf(
+			"got %dB delivery: [%v] %q",
+			len(d.Body),
+			d.DeliveryTag,
+			d.Body,
+		)
+		d.Ack(false)
+	}
+	log.Printf("handle: deliveries channel closed")
+	done <- nil
 }
