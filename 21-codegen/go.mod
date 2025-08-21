@@ -7,7 +7,7 @@ require (
 	github.com/ettle/strcase v0.2.0
 	github.com/golang/mock v1.4.3
 	github.com/golang/protobuf v1.4.1
-	github.com/mailru/easyjson v0.7.7
+	github.com/mailru/easyjson v0.9.0
 	github.com/stretchr/testify v1.5.1
 	google.golang.org/protobuf v1.25.0
 )
