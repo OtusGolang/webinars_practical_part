@@ -1,5 +1,6 @@
-//go:generate ./command.sh
+// FOR *nix: //go:generate ./command.sh
 // FOR WINDOWS: //go:generate cmd /C command.win.bat
+//go:generate ./command.sh
 
 package main
 

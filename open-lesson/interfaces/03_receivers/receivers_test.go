@@ -13,15 +13,16 @@ type Human struct {
 	Greeting string
 }
 
-func (h Human) SayHello() { // try reference receiver
+func (h *Human) SayHello() { // try reference receiver
 	h.Greeting = h.Greeting + "!"
 	fmt.Println(h.Greeting)
 }
 
 func TestReceivers(t *testing.T) {
-	var s Speaker = Human{Greeting: "Hello"}
+	var s Speaker = &Human{Greeting: "Hello"}
 	s.SayHello()
-	s = Human{Greeting: "Hello2"}
+	s.SayHello()
+	s = &Human{Greeting: "Hello2"}
 
 	//s = &OtherHumanType{}
 }
@@ -31,7 +32,7 @@ func TestUnaddressable(t *testing.T) {
 	exampleMap := map[string]Human{"a": {Greeting: "Hello"}}
 
 	fmt.Println(exampleMap["a"])
-	// fmt.Println(&(exampleMap["a"])) // compiler: cannot take address of (exampleMap["a"])
+	fmt.Println((exampleMap["a"])) // compiler: cannot take address of (exampleMap["a"])
 
 	exampleVar := exampleMap["a"]
 	fmt.Println(&exampleVar) // works

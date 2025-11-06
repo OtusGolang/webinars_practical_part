@@ -12,7 +12,14 @@ type MsgEventChanged struct {
 }
 
 func processMessage(msg interface{}) {
-	// Implement me.
+	switch m := msg.(type) {
+	case MsgUserBalanceChanged:
+		println("user", m.userID, "balance was changed to", m.balance)
+	case MsgEventChanged:
+		println("event", m.eventID, "was changed")
+	default:
+		println("unknown message:", msg)
+	}
 }
 
 /*

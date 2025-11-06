@@ -13,7 +13,7 @@ const (
 
 func main() {
 	status := Sent
-	fmt.Printf("Message is %s\n", status) // Message is Sent
+	fmt.Printf("Message is %v\n", status) // Message is Sent
 }
 
 // run with: go run main.go messagestatus_string.go

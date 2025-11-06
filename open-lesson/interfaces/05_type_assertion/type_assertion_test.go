@@ -8,7 +8,7 @@ import (
 func TestTypeAssertion(t *testing.T) {
 	var i any = "hello" // any = interface{}
 
-	r1 := i.(int)
+	r1 := i.(string)
 	fmt.Println(r1)
 
 	r2, ok := i.(string)

@@ -15,7 +15,6 @@ import (
 	"github.com/streadway/amqp"
 )
 
-// Consumer ...
 type Consumer struct {
 	conn         *amqp.Connection
 	channel      *amqp.Channel

@@ -1,4 +1,4 @@
-package refs
+package variables
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ type Human struct {
 	Greeting string
 }
 
-func (h Human) SayHello() { // try reference receiver
+func (h Human) SayHello() {
 	fmt.Println(h.Greeting)
 }
 

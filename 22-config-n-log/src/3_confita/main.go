@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/heetch/confita/backend/flags"
 	"log"
 	"time"
+
+	"github.com/heetch/confita/backend/flags"
 
 	"github.com/heetch/confita"
 	"github.com/heetch/confita/backend/env"
@@ -22,7 +23,7 @@ type Config struct {
 	}
 }
 
-//serviceName=go-is-go go run ./src/3_confita
+// serviceName=go-is-go go run ./src/3_confita
 func main() {
 	cfg := Config{
 		ServiceName: "ConfitaTest",
