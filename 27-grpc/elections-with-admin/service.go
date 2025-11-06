@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	pb "github.com/OtusGolang/webinars_practical_part/27-grpc/elections-with-admin/pb"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/empty"
 )
@@ -14,7 +15,7 @@ import (
 const defaultInterval = 5 * time.Second
 
 type Service struct {
-	UnimplementedElectionsServer
+	pb.UnimplementedElectionsServer
 
 	lock     sync.RWMutex
 	stats    map[uint32]uint32
@@ -28,7 +29,7 @@ func NewService() *Service {
 	}
 }
 
-func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, error) {
+func (s *Service) SubmitVote(ctx context.Context, req *pb.Vote) (*empty.Empty, error) {
 	if err := s.submitVote(req); err != nil {
 		return nil, err
 	}
@@ -36,7 +37,7 @@ func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, erro
 	return &empty.Empty{}, nil
 }
 
-func (s *Service) submitVote(req *Vote) error {
+func (s *Service) submitVote(req *pb.Vote) error {
 	log.Printf("new vote receive (passport=%s, candidate_id=%d, time=%v)",
 		req.Passport, req.CandidateId, req.Time.AsTime())
 
@@ -52,10 +53,10 @@ func (s *Service) submitVote(req *Vote) error {
 	return nil
 }
 
-func (s *Service) Internal(srv Elections_InternalServer) error {
+func (s *Service) Internal(srv pb.Elections_InternalServer) error {
 	log.Printf("new internal listener")
 
-	inChan := make(chan *Vote)
+	inChan := make(chan *pb.Vote)
 	go func() {
 		defer close(inChan)
 
@@ -92,8 +93,8 @@ func (s *Service) Internal(srv Elections_InternalServer) error {
 				continue
 			}
 
-			msg := &StatsVote{
-				Body: &StatsVote_Vote{
+			msg := &pb.StatsVote{
+				Body: &pb.StatsVote_Vote{
 					Vote: req,
 				},
 			}
@@ -103,8 +104,8 @@ func (s *Service) Internal(srv Elections_InternalServer) error {
 			}
 
 		case <-time.After(defaultInterval):
-			msg := &StatsVote{
-				Body: &StatsVote_Stats{
+			msg := &pb.StatsVote{
+				Body: &pb.StatsVote_Stats{
 					Stats: s.getStats(),
 				},
 			}
@@ -118,7 +119,7 @@ func (s *Service) Internal(srv Elections_InternalServer) error {
 	return nil
 }
 
-func (s *Service) getStats() *Stats {
+func (s *Service) getStats() *pb.Stats {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 
@@ -127,7 +128,7 @@ func (s *Service) getStats() *Stats {
 		stats[k] = v
 	}
 
-	return &Stats{
+	return &pb.Stats{
 		Records: stats,
 		Time:    ptypes.TimestampNow(),
 	}

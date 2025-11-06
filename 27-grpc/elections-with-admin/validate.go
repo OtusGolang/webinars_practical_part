@@ -2,6 +2,8 @@ package main
 
 import (
 	"errors"
+
+	pb "github.com/OtusGolang/webinars_practical_part/27-grpc/elections-with-admin/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -38,11 +40,10 @@ func StreamServerRequestValidatorInterceptor(validator Validator) grpc.StreamSer
 
 func ValidateReq(req interface{}) error {
 	switch r := req.(type) {
-	case *Vote:
+	case *pb.Vote:
 		if r.Passport == "" || r.CandidateId == 0 {
 			return errors.New("middleware validator: passport or candidate_id wrong")
 		}
 	}
 	return nil
 }
-

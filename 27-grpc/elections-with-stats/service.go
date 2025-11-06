@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	pb "github.com/OtusGolang/webinars_practical_part/27-grpc/elections-with-stats/pb"
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -15,7 +16,7 @@ import (
 const defaultInterval = 5 * time.Second
 
 type Service struct {
-	UnimplementedElectionsServer
+	pb.UnimplementedElectionsServer
 
 	lock     sync.RWMutex
 	stats    map[uint32]uint32
@@ -29,7 +30,7 @@ func NewService() *Service {
 	}
 }
 
-func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, error) {
+func (s *Service) SubmitVote(ctx context.Context, req *pb.Vote) (*empty.Empty, error) {
 	log.Printf("new vote receive (passport=%s, candidate_id=%d, time=%v)",
 		req.Passport, req.CandidateId, req.Time.AsTime())
 
@@ -46,7 +47,7 @@ func (s *Service) SubmitVote(ctx context.Context, req *Vote) (*empty.Empty, erro
 	return &empty.Empty{}, nil
 }
 
-func (s *Service) GetStats(req *empty.Empty, srv Elections_GetStatsServer) error {
+func (s *Service) GetStats(req *empty.Empty, srv pb.Elections_GetStatsServer) error {
 	log.Printf("new stats listener")
 
 L:
@@ -64,7 +65,7 @@ L:
 			}
 			s.lock.RUnlock()
 
-			msg := &Stats{
+			msg := &pb.Stats{
 				Records: stats,
 				Time:    timestamppb.Now(),
 			}
