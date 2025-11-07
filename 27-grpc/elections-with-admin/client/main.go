@@ -5,14 +5,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strconv"
 	"strings"
 	"sync/atomic"
 	"time"
-
-	"google.golang.org/grpc/metadata"
 
 	"github.com/OtusGolang/webinars_practical_part/27-grpc/elections-with-admin/pb"
 	"google.golang.org/grpc"
@@ -39,19 +38,51 @@ func main() {
 
 	client := pb.NewElectionsClient(conn)
 
+	log.Printf("starting vote stream...")
+	voteStream, err := client.Internal(context.Background())
+	if err != nil {
+		log.Fatal("error on get internal stream", err)
+	}
+
+	// go routine to receive admin messages
+	go func() {
+		for {
+			statsVote, err := voteStream.Recv()
+			if err != nil {
+				if err == io.EOF {
+					log.Printf("vote stream ended by server")
+					os.Exit(0)
+					return
+				}
+				log.Fatal("error on receive from internal stream", err)
+			}
+
+			log.Printf("admin message received")
+			v := statsVote.GetVote()
+			if v != nil {
+				log.Printf("admin vote received: passport=%s candidate_id=%d note=%s time=%s",
+					v.Passport, v.CandidateId, v.Note, v.Time.AsTime().Format(time.RFC3339))
+			}
+
+			s := statsVote.GetStats()
+			if s != nil {
+				log.Printf("admin stats received: %v", s.Records)
+			}
+		}
+	}()
+
+	// main routine to send votes
 	reader := bufio.NewReader(os.Stdin)
 	for {
-		req, err := getRequest(reader)
+		vote, err := getRequest(reader)
 		if err != nil {
 			log.Printf("error: %v", err)
 			continue
 		}
 
-		md := metadata.New(nil)
-		md.Append("request_id", GenerateActionId())
-		ctx := metadata.NewOutgoingContext(context.Background(), md)
-		if _, err := client.SubmitVote(ctx, req); err != nil {
-			log.Fatal(err)
+		err = voteStream.Send(vote)
+		if err != nil {
+			log.Fatal("error on send vote to internal stream", err)
 		}
 
 		log.Printf("vote submitted")

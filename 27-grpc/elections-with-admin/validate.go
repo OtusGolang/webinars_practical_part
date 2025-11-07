@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log"
 
 	pb "github.com/OtusGolang/webinars_practical_part/27-grpc/elections-with-admin/pb"
 	"google.golang.org/grpc"
@@ -18,17 +19,20 @@ type recvWrapper struct {
 }
 
 func (s *recvWrapper) RecvMsg(m interface{}) error {
-	if err := s.validFunc(m); err != nil {
-		return status.Errorf(codes.InvalidArgument, "%s is rejected by validate middleware. Error: %v", s.info.FullMethod, err)
-	}
+	log.Printf("DBG RecvMsg before: %v, %v", m, m == nil)
 	if err := s.ServerStream.RecvMsg(m); err != nil {
 		return err
+	}
+	log.Printf("DBG RecvMsg after: %v, %v", m, m == nil)
+	if err := s.validFunc(m); err != nil {
+		return status.Errorf(codes.InvalidArgument, "%s is rejected by validate middleware. Error: %v", s.info.FullMethod, err)
 	}
 	return nil
 }
 
 func StreamServerRequestValidatorInterceptor(validator Validator) grpc.StreamServerInterceptor {
 	return func(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+		log.Printf("DBG StreamServerRequestValidatorInterceptor: %v, %v, %v", info.FullMethod, info.IsClientStream, info.IsServerStream)
 		wrapper := &recvWrapper{
 			ServerStream: ss,
 			validFunc:    validator,
