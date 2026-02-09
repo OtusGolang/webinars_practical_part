@@ -15,6 +15,6 @@ func main() {
 	signal.Ignore(syscall.SIGTERM)
 
 	for s := range c {
-		fmt.Println("Got signal:", s)
+		fmt.Println("Aha! Got signal:", s)
 	}
 }
