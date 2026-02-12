@@ -15,6 +15,11 @@ func main() {
 	// 	log.Fatal(err)
 	// }
 	http.Handle("/", http.FileServer(http.FS(embedFiles)))
+
+	// Для сравнения - можно раскомментировать и использовать реальную файловую систему вместо embed
+	//real := os.DirFS(".")
+	//http.Handle("/", http.FileServer(http.FS(real)))
+
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		log.Fatal(err)
 	}

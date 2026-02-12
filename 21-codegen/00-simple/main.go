@@ -27,3 +27,6 @@ func main() {
 // go generate -x
 // go generate -n
 // go generate -run bye
+
+// to make go install work:
+// export PATH=$PATH:$(go env GOPATH)/bin
