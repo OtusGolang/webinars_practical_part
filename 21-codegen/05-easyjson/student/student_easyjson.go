@@ -28,7 +28,7 @@ func easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21Codegen05Ea
 	}
 	in.Delim('{')
 	for !in.IsDelim('}') {
-		key := in.UnsafeString()
+		key := in.UnsafeFieldName(false)
 		in.WantColon()
 		if in.IsNull() {
 			in.Skip()
@@ -47,11 +47,7 @@ func easyjsonB83d7b77DecodeGithubComOtusGolangWebinarsPracticalPart21Codegen05Ea
 				in.Skip()
 			} else {
 				in.Delim('{')
-				if !in.IsDelim('}') {
-					out.Marks = make(map[string]int)
-				} else {
-					out.Marks = nil
-				}
+				out.Marks = make(map[string]int)
 				for !in.IsDelim('}') {
 					key := string(in.String())
 					in.WantColon()
