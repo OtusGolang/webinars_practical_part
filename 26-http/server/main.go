@@ -37,7 +37,8 @@ func serverHandler(w http.ResponseWriter, r *http.Request) {
 // curl 0.0.0.0:8080/stat
 // curl 0.0.0.0:8080/stat/?candidate_id=1
 func main() {
-
+	// var protocols http.Protocols        // http2 enable for non-https
+	// protocols.SetUnencryptedHTTP2(true) // http2 enable for non-https
 	handlerHttp := &MyHandler{}
 
 	server := &http.Server{
@@ -46,6 +47,7 @@ func main() {
 		Handler:      handlerHttp,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
+		// Protocols:    &protocols, // http2 enable for non-https
 	}
 
 	log.Print("server start on port 8080")

@@ -18,12 +18,18 @@ import (
 )
 
 func main() {
+
+	var protocols http.Protocols        // http2 enable for non-https
+	protocols.SetUnencryptedHTTP2(true) // http2 enable for non-https
+
 	slog.SetDefault(slog.New(tint.NewHandler(os.Stdout, nil)))
 
 	var tr http.RoundTripper
 	tr = &http.Transport{
 		MaxIdleConns:    100,
 		IdleConnTimeout: 90 * time.Second,
+		// ForceAttemptHTTP2: true,       // http2 enable for non-https
+		// Protocols:         &protocols, // http2 enable for non-https
 	}
 	tr = middleware.NewLoggingRoundTripper(tr)
 
