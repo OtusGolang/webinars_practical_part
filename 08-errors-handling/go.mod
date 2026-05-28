@@ -1,6 +1,6 @@
 module github.com/OtusGolang/webinars_practical_part/08-errors-handling
 
-go 1.21
+go 1.24
 
 require (
 	github.com/hashicorp/go-multierror v1.1.1
