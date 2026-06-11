@@ -27,11 +27,11 @@ func BenchmarkEasyStudent(b *testing.B) {
 		},
 	}
 	for i := 0; i < b.N; i++ {
-		data, err := json.Marshal(s)
+		data, err := s.MarshalJSON()
 		if err != nil {
 			panic(err)
 		}
-		if err := json.Unmarshal(data, &student.Student{}); err != nil {
+		if err := s.UnmarshalJSON(data); err != nil {
 			panic(err)
 		}
 	}
