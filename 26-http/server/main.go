@@ -1,12 +1,18 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/OtusGolang/webinars_practical_part/26-http/handler"
+	"github.com/lmittmann/tint"
 )
 
 type MyHandler struct {
@@ -37,6 +43,8 @@ func serverHandler(w http.ResponseWriter, r *http.Request) {
 // curl 0.0.0.0:8080/stat
 // curl 0.0.0.0:8080/stat/?candidate_id=1
 func main() {
+	slog.SetDefault(slog.New(tint.NewHandler(os.Stdout, nil)))
+
 	// var protocols http.Protocols        // http2 enable for non-https
 	// protocols.SetUnencryptedHTTP2(true) // http2 enable for non-https
 	handlerHttp := &MyHandler{}
@@ -50,7 +58,30 @@ func main() {
 		// Protocols:    &protocols, // http2 enable for non-https
 	}
 
-	log.Print("server start on port 8080")
-	log.Fatal(server.ListenAndServe())
+	// Контекст, который отменяется по SIGINT/SIGTERM
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
+	// Запускаем сервер в отдельной горутине, чтобы не блокировать main
+	go func() {
+		slog.Info("server start on", "addr", server.Addr)
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			slog.Error("listen failed", "err", err)
+			os.Exit(1)
+		}
+	}()
+
+	// Ждём сигнал остановки
+	<-ctx.Done()
+	slog.Info("shutting down server...")
+
+	// Даём активным запросам время завершиться
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		slog.Error("server shutdown failed", "err", err)
+		return
+	}
+	slog.Info("server stopped gracefully")
 }

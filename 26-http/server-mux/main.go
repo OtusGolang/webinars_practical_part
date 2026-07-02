@@ -1,9 +1,14 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/OtusGolang/webinars_practical_part/26-http/handler"
 	"github.com/OtusGolang/webinars_practical_part/26-http/middleware"
@@ -72,7 +77,27 @@ func main() {
 		Handler: logger,
 	}
 
-	slog.Info("server start on", "addr", server.Addr)
-	err := server.ListenAndServe()
-	slog.Info("server stopped", "err", err)
+	// Контекст, отменяемый по SIGINT/SIGTERM.
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	go func() {
+		slog.Info("server start on", "addr", server.Addr)
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			slog.Error("listen failed", "err", err)
+			os.Exit(1)
+		}
+	}()
+
+	<-ctx.Done()
+	slog.Info("shutting down server...")
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(shutdownCtx); err != nil {
+		slog.Error("server shutdown failed", "err", err)
+		return
+	}
+	slog.Info("server stopped gracefully")
 }
