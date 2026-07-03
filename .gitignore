@@ -14,5 +14,6 @@
 ehthumbs.db
 Thumbs.db
 .vscode/
-26-http/server-mux.exe
-26-http/server.exe
+
+
+*.exe

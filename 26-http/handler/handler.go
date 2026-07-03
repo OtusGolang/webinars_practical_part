@@ -110,8 +110,9 @@ func (s *Service) GetStats(w http.ResponseWriter, r *http.Request) {
 		WriteResponse(w, resp)
 		return
 	}
-	args := r.URL.Query()
-	id := args.Get("candidate_id")
+	// candidate_id приходит как path-параметр (Go 1.22+ routing): "/stat/{candidate_id}".
+	// Для маршрута "/stat" (без параметра) PathValue вернёт "" → отдаём общую статистику.
+	id := r.PathValue("candidate_id")
 	if len(id) > 0 {
 		candidateId, err := strconv.Atoi(id)
 		if err != nil {

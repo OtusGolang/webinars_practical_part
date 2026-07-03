@@ -8,7 +8,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"net/url"
 	"os"
 	"time"
 
@@ -19,8 +18,8 @@ import (
 
 func main() {
 
-	var protocols http.Protocols        // http2 enable for non-https
-	protocols.SetUnencryptedHTTP2(true) // http2 enable for non-https
+	//var protocols http.Protocols        // http2 enable for non-https
+	//protocols.SetUnencryptedHTTP2(true) // http2 enable for non-https
 
 	slog.SetDefault(slog.New(tint.NewHandler(os.Stdout, nil)))
 
@@ -68,16 +67,13 @@ func main() {
 
 	slog.Info("responce from vote", "resp", respVote)
 
-	// get stat for candidate with id  1
-	reqArgs := url.Values{}
-	reqArgs.Add("candidate_id", "1")
-
-	reqUrl, _ := url.Parse("http://0.0.0.0:8080/stat")
-	reqUrl.RawQuery = reqArgs.Encode()
+	// get stat for candidate with id 1 (path-параметр, Go 1.22+ routing)
+	reqUrl := "http://0.0.0.0:8080/stat/1"
 
 	// with context
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	reqStat, _ := http.NewRequestWithContext(ctx, http.MethodGet, reqUrl.String(), nil)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	reqStat, _ := http.NewRequestWithContext(ctx, http.MethodGet, reqUrl, nil)
 	reqStat.Header.Add("User-Agent", `Mozilla/5.0 Gecko/20100101 Firefox/39.0`)
 
 	// respStat, err := http.DefaultClient.Do(req)

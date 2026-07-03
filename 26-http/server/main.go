@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -20,17 +21,24 @@ type MyHandler struct {
 }
 
 func (m *MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	serverHandler(w, r)
+	manualRouting(w, r)
 }
 
 var vote = handler.NewService()
 
-func serverHandler(w http.ResponseWriter, r *http.Request) {
+func manualRouting(w http.ResponseWriter, r *http.Request) {
 	resp := &handler.Response{}
-	switch r.URL.Path {
-	case "/vote":
+	switch {
+	case r.URL.Path == "/vote":
 		vote.SubmitVote(w, r)
-	case "/stat", "/stat/":
+	case r.URL.Path == "/stat":
+		vote.GetStats(w, r)
+	case strings.HasPrefix(r.URL.Path, "/stat/"):
+		// r.SetPathValue (Go 1.22+) записывает path-параметр вручную,
+		// а r.PathValue его читает. Обычно значения ставит ServeMux из
+		// паттерна "/stat/{candidate_id}", но при ручной маршрутизации
+		// это можно сделать самому — например, распарсив путь.
+		r.SetPathValue("candidate_id", strings.TrimPrefix(r.URL.Path, "/stat/"))
 		vote.GetStats(w, r)
 	default:
 		resp.Error.Message = fmt.Sprintf("uri %s not found", r.URL.Path)
