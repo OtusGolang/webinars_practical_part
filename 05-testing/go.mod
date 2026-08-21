@@ -1,6 +1,6 @@
 module github.com/OtusGolang/webinars_practical_part/05-testing
 
-go 1.21
+go 1.24
 
 require (
 	github.com/kulti/titlecase v0.0.0-20200224064438-b92376e612e5
